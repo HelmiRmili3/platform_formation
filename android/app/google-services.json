@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "94293805920",
+    "firebase_url": "https://eplatform-812ae-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "eplatform-812ae",
+    "storage_bucket": "eplatform-812ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94293805920:android:d6a1dfa075a23dcdb9ec05",
+        "android_client_info": {
+          "package_name": "com.example.eplatfrom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOsncsG-sdPI5zHGOVyojEzeLK4ZFlGuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
