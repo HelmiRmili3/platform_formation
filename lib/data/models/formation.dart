@@ -1,0 +1,72 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eplatfrom/data/models/seance.dart';
+
+class Formation {
+  final String id;
+  final String name;
+  final String formateur;
+  final List<Seance> seances;
+  final DateTime releaseDate;
+  final List<String> etudiants;
+  final DateTime totalHours;
+  final String description;
+
+  Formation({
+    required this.id,
+    required this.name,
+    required this.formateur,
+    required this.seances,
+    required this.releaseDate,
+    required this.etudiants,
+    required this.totalHours,
+    required this.description,
+  });
+
+  factory Formation.fromJson(Map<String, dynamic> json) {
+    return Formation(
+      id: json['id'],
+      name: json['name'],
+      formateur: json['formateur'],
+      seances: List<Seance>.from(json['seances'].map((seance) => Seance.fromJson(seance))),
+      releaseDate: DateTime.parse(json['releaseDate']),
+      etudiants: List<String>.from(json['etudiants']),
+      totalHours: json['totalHours'],
+      description: json['description'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'formateur': formateur,
+      'seances': seances.map((seance) => seance.toJson()).toList(),
+      'releaseDate': releaseDate.toIso8601String(),
+      'etudiants': etudiants,
+      'totalHours': totalHours,
+      'description': description,
+    };
+  }
+
+  factory Formation.fromSnapshot(DocumentSnapshot snapshot) {
+    Map<String, dynamic> json = snapshot.data() as Map<String, dynamic>;
+    json['id'] = snapshot.id;
+    return Formation.fromJson(json);
+  }
+}
+
+// class Formateur {
+
+//   factory Formateur.fromJson(Map<String, dynamic> json) {
+//     // Implement fromJson method if needed
+//     return Formateur();
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     // Implement toJson method if needed
+//     return {};
+//   }
+// }
+
+

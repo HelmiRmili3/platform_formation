@@ -26,7 +26,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     ArchiveScreen(),
     ProfileScreen()
   ];
-  
+
   final List<Widget> titles = const [
     Text("Formation"),
     Text("Users"),
@@ -53,10 +53,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth > 450) {
-            // Display as Row if screen width is greater than 600
             return _buildRowLayout();
           } else {
-            // Display as Column if screen width is less than or equal to 600
             return _buildColumnLayout();
           }
         },

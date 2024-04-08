@@ -1,6 +1,6 @@
 import 'package:eplatfrom/app_routes.dart';
-import 'package:eplatfrom/bindings.dart';
 import 'package:eplatfrom/firebase_options.dart';
+import 'package:eplatfrom/presentation/bindings/formation_bindings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: '/formateur',
-      initialBinding: AppBindings(),
+      initialBinding: FormationBinding(),
       getPages: AppRoutes.routes,
     );
   }

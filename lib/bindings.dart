@@ -1,10 +1,14 @@
-
+import 'package:eplatfrom/presentation/controllers/formation_controller.dart';
+import 'package:get/get.dart';
 import 'package:get/get_instance/src/bindings_interface.dart';
 
 class AppBindings extends Bindings {
   @override
   void dependencies() {
-    //Get.lazyPut<TodoController>(() => TodoController(TodoRepositoryImpl()));
-    // Add bindings for other controllers and repositories here
+    Get.put(FormationController(
+        addFormationUseCase: Get.find(),
+        editFormationUseCase: Get.find(),
+        deleteFormationUseCase: Get.find(),
+        fetchFormationsUseCase: Get.find()));
   }
 }
