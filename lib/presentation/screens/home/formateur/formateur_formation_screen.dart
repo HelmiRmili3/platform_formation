@@ -1,15 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class FormateurFormationScreen extends StatelessWidget {
-//   const FormateurFormationScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Center(
-//       child: Text("FormateurFormationScreen"),
-//     );
-//   }
-// }
 import 'package:eplatfrom/data/models/formation.dart';
 import 'package:eplatfrom/presentation/controllers/formation_controller.dart';
 import 'package:flutter/material.dart';
