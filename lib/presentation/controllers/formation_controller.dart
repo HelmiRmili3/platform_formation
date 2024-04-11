@@ -44,11 +44,20 @@ class FormationController extends GetxController {
     results.fold((failure) {
       //print(failure.message);
       Get.snackbar("Error", failure.message);
-    }, (todo) {
+    }, (formation) {
       // clear form
       nameController.clear();
       descriptionController.clear();
       Get.snackbar("Success", "Todo added successfully");
+    });
+  }
+
+  Future<void> deleteFormation(Formation formation) async {
+    final results = await deleteFormationUseCase(Params(formation));
+    results.fold((failure) {
+      Get.snackbar("Error", failure.message);
+    }, (formation) {
+      Get.snackbar("Success", "Fomation Deleted successfully");
     });
   }
 
@@ -66,7 +75,7 @@ class FormationController extends GetxController {
     fetchFormationsUseCase(NoParams()).then((result) {
       result.fold(
         (failure) {
-         // print(failure.message);
+          // print(failure.message);
           Get.snackbar("Error", failure.message);
         },
         (stream) {
