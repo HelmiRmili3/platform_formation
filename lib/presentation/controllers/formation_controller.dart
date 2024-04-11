@@ -31,17 +31,18 @@ class FormationController extends GetxController {
   Future<void> addFormation() async {
     final results = await addFormationUseCase(Params(
       Formation(
-          id: const Uuid().v1(),
-          name: nameController.text.trim(),
-          description: descriptionController.text.trim(),
-          formateur: formateurController.text.trim(),
-          seances: [],
-          releaseDate: DateTime.now(),
-          etudiants: [],
-          totalHours: DateTime.now()),
+        id: const Uuid().v1(),
+        name: nameController.text.trim(),
+        description: descriptionController.text.trim(),
+        formateur: formateurController.text.trim(),
+        seances: [],
+        releaseDate: DateTime.now(),
+        etudiants: [],
+        totalHours: DateTime.now(),
+      ),
     ));
     results.fold((failure) {
-      print(failure.message);
+      //print(failure.message);
       Get.snackbar("Error", failure.message);
     }, (todo) {
       // clear form
@@ -51,18 +52,26 @@ class FormationController extends GetxController {
     });
   }
 
-  Stream<List<Formation>>? formationsStream;
+  // Stream of formations
+  Rx<List<Formation>> formationsStream = Rx<List<Formation>>([]);
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Fetch formations when the controller initializes
+    fetchFormations();
+  }
 
   void fetchFormations() {
     fetchFormationsUseCase(NoParams()).then((result) {
       result.fold(
         (failure) {
-          print(failure.message);
+         // print(failure.message);
           Get.snackbar("Error", failure.message);
         },
         (stream) {
-          formationsStream = stream;
-          update(); // Update the UI
+          // Listen to the stream and update formationsStream
+          formationsStream.bindStream(stream);
         },
       );
     });

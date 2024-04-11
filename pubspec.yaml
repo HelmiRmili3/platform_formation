@@ -18,6 +18,7 @@ dependencies:
   cloud_firestore: ^4.15.10
   uuid: ^4.3.3
   dartz: ^0.10.1
+  rx_notifier: ^2.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

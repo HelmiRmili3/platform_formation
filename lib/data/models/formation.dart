@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eplatfrom/data/models/seance.dart';
 
@@ -31,7 +30,7 @@ class Formation {
       seances: List<Seance>.from(json['seances'].map((seance) => Seance.fromJson(seance))),
       releaseDate: DateTime.parse(json['releaseDate']),
       etudiants: List<String>.from(json['etudiants']),
-      totalHours: json['totalHours'],
+      totalHours: DateTime.parse(json['totalHours']), 
       description: json['description'],
     );
   }
@@ -44,7 +43,7 @@ class Formation {
       'seances': seances.map((seance) => seance.toJson()).toList(),
       'releaseDate': releaseDate.toIso8601String(),
       'etudiants': etudiants,
-      'totalHours': totalHours,
+      'totalHours': totalHours.toIso8601String(), 
       'description': description,
     };
   }
@@ -56,17 +55,5 @@ class Formation {
   }
 }
 
-// class Formateur {
-
-//   factory Formateur.fromJson(Map<String, dynamic> json) {
-//     // Implement fromJson method if needed
-//     return Formateur();
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     // Implement toJson method if needed
-//     return {};
-//   }
-// }
 
 

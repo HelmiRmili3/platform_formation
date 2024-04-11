@@ -1,51 +1,34 @@
-import 'package:eplatfrom/data/models/formation.dart';
 import 'package:eplatfrom/presentation/controllers/formation_controller.dart';
+import 'package:eplatfrom/presentation/screens/home/formateur/stepper_from_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FormateurFormationScreen extends GetView<FormationController> {
-  const FormateurFormationScreen({super.key});
+  const FormateurFormationScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<List<Formation>>(
-        stream: controller.formationsStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No formations available.'),
-            );
-          } else {
-            final formations = snapshot.data!;
-            return ListView.builder(
-              itemCount: formations.length,
-              itemBuilder: (context, index) {
-                final formation = formations[index];
-                return ListTile(
-                  title: Text(formation.name),
-                  subtitle: Text(formation.description),
-                  // Add more widgets to display other formation details
-                );
-              },
-            );
-          }
-        },
-      ),
+      body: Obx(() {
+        // Use Obx to listen to changes in the controller
+        return controller.formationsStream.value.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                itemCount: controller.formationsStream.value.length,
+                itemBuilder: (context, index) {
+                  final formation = controller.formationsStream.value[index];
+                  return ListTile(
+                    title: Text(formation.name),
+                    subtitle: Text(formation.description),
+                  );
+                },
+              );
+      }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Trigger fetching of formations
-          controller.fetchFormations();
-        },
-        child: const Icon(Icons.refresh),
+        onPressed: () => Get.to(const StepperFormScreen()),
+        child: const Icon(Icons.add),
       ),
     );
   }
