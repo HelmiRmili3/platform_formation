@@ -1,9 +1,11 @@
-import 'package:eplatfrom/app_routes.dart';
 import 'package:eplatfrom/bindings.dart';
 import 'package:eplatfrom/firebase_options.dart';
+import 'package:eplatfrom/presentation/controllers/auth_controller.dart';
+import 'package:eplatfrom/presentation/screens/auth/signin_screen.dart';
+import 'package:eplatfrom/presentation/screens/home/formateur/formateur_home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,9 +27,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/formateur',
       initialBinding: AppBindings(),
-      getPages: AppRoutes.routes,
+            home: Obx(
+        () => Get.find<AuthController>().isAuthenticated
+            ? const FormateurHomeScreen()
+            : const SignInScreen(),
+      ),
+     // getPages: AppRoutes.routes,
     );
   }
 }

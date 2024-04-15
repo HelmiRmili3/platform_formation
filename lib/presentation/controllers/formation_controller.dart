@@ -3,6 +3,7 @@ import 'package:eplatfrom/domain/usecases/formateur/formation/add.dart';
 import 'package:eplatfrom/domain/usecases/formateur/formation/delete.dart';
 import 'package:eplatfrom/domain/usecases/formateur/formation/edit.dart';
 import 'package:eplatfrom/domain/usecases/formateur/formation/fetch.dart';
+import 'package:eplatfrom/presentation/screens/home/formateur/formateur_home_screen.dart';
 import 'package:eplatfrom/utils/usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,35 +43,35 @@ class FormationController extends GetxController {
       ),
     ));
     results.fold((failure) {
-      //print(failure.message);
       Get.snackbar("Error", failure.message);
-    }, (todo) {
-      // clear form
-      nameController.clear();
-      descriptionController.clear();
+    }, (r) {
+      Get.offAll(()=>const FormateurHomeScreen());
+      clear();
       Get.snackbar("Success", "Todo added successfully");
     });
   }
 
-  // Stream of formations
   Rx<List<Formation>> formationsStream = Rx<List<Formation>>([]);
 
   @override
   void onInit() {
     super.onInit();
-    // Fetch formations when the controller initializes
     fetchFormations();
+  }
+
+  clear() {
+    nameController.clear();
+    formateurController.clear();
+    descriptionController.clear();
   }
 
   void fetchFormations() {
     fetchFormationsUseCase(NoParams()).then((result) {
       result.fold(
         (failure) {
-         // print(failure.message);
           Get.snackbar("Error", failure.message);
         },
         (stream) {
-          // Listen to the stream and update formationsStream
           formationsStream.bindStream(stream);
         },
       );

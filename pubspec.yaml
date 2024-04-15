@@ -1,7 +1,7 @@
 name: eplatfrom
 description: "A new Flutter project."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' 
 
 version: 1.0.0+1
 
@@ -19,6 +19,8 @@ dependencies:
   uuid: ^4.3.3
   dartz: ^0.10.1
   rx_notifier: ^2.3.0
+  file_picker: ^8.0.0+1
+  firebase_storage: ^11.7.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
