@@ -8,11 +8,10 @@ class FormateurProfileScreen extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Center(
-            child: ElevatedButton(
-              onPressed: () => controller.signOut(),
-              child: const Text("LogOut"),
-            ),
-          );
-    
+      child: ElevatedButton(
+        onPressed: () => controller.signOut(),
+        child: const Text("LogOut"),
+      ),
+    );
   }
 }

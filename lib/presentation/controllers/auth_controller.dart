@@ -1,4 +1,11 @@
+import 'dart:io';
+
+import 'package:eplatfrom/domain/usecases/get_user_usecase.dart';
 import 'package:eplatfrom/presentation/screens/auth/signin_screen.dart';
+import 'package:eplatfrom/presentation/screens/home/admin/admin_home_screen.dart';
+import 'package:eplatfrom/presentation/screens/home/etudiant/etudiant_home_screen.dart';
+import 'package:eplatfrom/presentation/screens/home/formateur/formateur_home_screen.dart';
+import 'package:eplatfrom/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,16 +31,23 @@ class AuthController extends GetxController {
   final SignUpUseCase signUpUseCase;
   final SignOutUseCase signOutUseCase;
   final ForgetPasswordUseCase forgetPasswordUseCase;
+  final GetUserUseCase getUserUseCase;
+
   Rx<User?> user = Rx<User?>(null);
+  Rx<File?> selectedImage = Rx<File?>(null);
+
+  void setSelectedImage(File? image) {
+    selectedImage.value = image;
+  }
 
   AuthController({
     required this.signUpUseCase,
     required this.signOutUseCase,
     required this.forgetPasswordUseCase,
     required this.signInUseCase,
+    required this.getUserUseCase,
   });
 
-  // Check if user is authenticated
   bool get isAuthenticated => user.value != null;
 
   Future<void> signOut() async {
@@ -46,6 +60,7 @@ class AuthController extends GetxController {
             ), (r) {
       Get.snackbar("Success", "User SignOut successfully");
       clear();
+      Get.off(() => const SignInScreen());
     });
   }
 
@@ -59,24 +74,29 @@ class AuthController extends GetxController {
                 l.message,
                 backgroundColor: Colors.redAccent,
               ), (r) {
-        if (isAuthenticated) {
-          Get.snackbar("Success", "User SignIn successfully");
-          clear();
-        } else {
-          Get.snackbar(
-            "Error",
-            "user not authenticated",
-            backgroundColor: Colors.redAccent,
-          );
-        }
+        _auth.authStateChanges().listen((User? firebaseUser) {
+          user.value = firebaseUser;
+          if (user.value != null) {
+            getUserUseCase.repository
+                .getUser(user.value!.uid)
+                .then((userModel) {
+              return Get.off(() => determineInitialRoute(userModel.role));
+            });
+          }
+        });
       });
     }
   }
 
   Future<void> signUp() async {
     if (signupFormKey.currentState!.validate()) {
+      File? selectedImageFile = selectedImage.value; // Extract the File object
+
       final results = await signUpUseCase(
-          emailController.text.trim(), passwordController.text.trim());
+          nameController.text.trim(),
+          emailController.text.trim(),
+          passwordController.text.trim(),
+          selectedImageFile!);
       results.fold(
           (l) => Get.snackbar(
                 "Error",
@@ -84,9 +104,9 @@ class AuthController extends GetxController {
                 backgroundColor: Colors.redAccent,
               ), (r) {
         if (isAuthenticated) {
-          Get.snackbar("Success", "User Signup successfully");
+          Get.off(() => const SignInScreen());
           clear();
-          Get.to(() => const SignInScreen());
+          Get.snackbar("Success", "User Signup successfully");
         } else {
           Get.snackbar(
             "Error",
@@ -114,7 +134,6 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Listen to authentication state changes
     _auth.authStateChanges().listen((User? firebaseUser) {
       user.value = firebaseUser;
     });
@@ -136,5 +155,19 @@ class AuthController extends GetxController {
     emailController.clear();
     passwordController.clear();
     nameController.clear();
+  }
+
+  Widget determineInitialRoute(Role role) {
+    switch (role) {
+      case Role.admin:
+        return const AdminHomeScreen();
+      case Role.etudiant:
+        return const EtudiantHomeScreen();
+      case Role.formateur:
+        return const FormateurHomeScreen();
+
+      default:
+        return const SignInScreen();
+    }
   }
 }

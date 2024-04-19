@@ -12,6 +12,8 @@ import 'package:uuid/uuid.dart';
 class FormationController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
+  Rx<bool> isLeading = Rx(true);
+
   final nameController = TextEditingController();
   final formateurController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -45,7 +47,7 @@ class FormationController extends GetxController {
     results.fold((failure) {
       Get.snackbar("Error", failure.message);
     }, (r) {
-      Get.offAll(()=>const FormateurHomeScreen());
+      Get.offAll(() => const FormateurHomeScreen());
       clear();
       Get.snackbar("Success", "Todo added successfully");
     });
@@ -75,6 +77,7 @@ class FormationController extends GetxController {
           formationsStream.bindStream(stream);
         },
       );
+      isLeading.value = false;
     });
   }
 }

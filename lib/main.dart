@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final w = MediaQuery.of(context).size.width;
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ePlatform',
@@ -28,12 +29,12 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialBinding: AppBindings(),
-            home: Obx(
+      home: Obx(
         () => Get.find<AuthController>().isAuthenticated
             ? const FormateurHomeScreen()
             : const SignInScreen(),
       ),
-     // getPages: AppRoutes.routes,
+      // getPages: AppRoutes.routes,
     );
   }
 }

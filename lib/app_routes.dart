@@ -11,7 +11,7 @@ import 'presentation/screens/home/formateur/stepper_from_screen.dart';
 class AppRoutes {
   static final routes = [
     GetPage(name: '/', page: () => const SignInScreen()),
-    GetPage(name: '/signup', page: () => const SignUpScreen()),
+    GetPage(name: '/signup', page: () =>  SignUpScreen()),
     GetPage(name: '/admin', page: () => const AdminHomeScreen()),
     GetPage(name: '/etudiant', page: () => const EtudiantHomeScreen()),
     GetPage(name: '/formateur', page: () => const FormateurHomeScreen()),

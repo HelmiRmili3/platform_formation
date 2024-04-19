@@ -1,4 +1,5 @@
 import 'package:eplatfrom/presentation/controllers/formation_controller.dart';
+import 'package:eplatfrom/presentation/screens/home/formateur/formation_details_screen.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/stepper_from_screen.dart';
 import 'package:eplatfrom/presentation/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
@@ -10,25 +11,34 @@ class FormateurFormationScreen extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[900],
       body: Obx(() {
         return controller.formationsStream.value.isEmpty
             ? const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
               )
             : ListView.builder(
                 itemCount: controller.formationsStream.value.length,
                 itemBuilder: (context, index) {
                   final formation = controller.formationsStream.value[index];
-                  // return ListTile(
-                  //   title: Text(formation.name),
-                  //   subtitle: Text(formation.description),
-                  // );
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: CustomCard(
-                      title: formation.name,
-                      description: formation.description,
-                      imageUrl:"https://i.pinimg.com/originals/6a/d9/0f/6ad90fb82cf534c03ba1d8c17a3124a7.jpg"
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          () => FormationDetailsScreen(
+                            formation: formation,
+                          ),
+                        );
+                      },
+                      child: CustomCard(
+                        title: formation.name,
+                        description: formation.description,
+                        imageUrl:
+                            "https://i.pinimg.com/originals/6a/d9/0f/6ad90fb82cf534c03ba1d8c17a3124a7.jpg",
+                      ),
                     ),
                   );
                 },
@@ -36,7 +46,12 @@ class FormateurFormationScreen extends GetView<FormationController> {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.to(() => const StepperFormScreen()),
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.white,
+        shape: const CircleBorder(eccentricity: 0.5),
+        child: Icon(
+          Icons.add,
+          color: Colors.blue[900],
+        ),
       ),
     );
   }

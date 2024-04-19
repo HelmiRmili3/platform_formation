@@ -15,14 +15,14 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200, // Adjust height as needed
+      height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         image: DecorationImage(
           image: NetworkImage(imageUrl),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.5),
+            Colors.white.withOpacity(0.5),
             BlendMode.darken,
           ),
         ),
@@ -35,8 +35,8 @@ class CustomCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: Colors.blue[900],
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -44,8 +44,8 @@ class CustomCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               description,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: Colors.blue[900],
                 fontSize: 16,
               ),
             ),

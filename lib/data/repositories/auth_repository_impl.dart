@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:eplatfrom/data/datasources/remote_data_source.dart';
+import 'package:eplatfrom/data/models/user.dart';
 import 'package:eplatfrom/domain/repositories/auth_repository.dart';
 import 'package:eplatfrom/shared/errors/failure.dart';
+import 'package:eplatfrom/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -44,12 +48,37 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, UserCredential?>> signup(
-      String email, String password) async {
+    String name,
+    String email,
+    String password,
+    File image,
+  ) async {
     try {
+      // signup user
       final result = await remoteDataSource.signUpUser(email, password);
+
+      if (result != null) {
+        // upload image to flutter storage
+
+        await remoteDataSource.uploadFile(image).then((imageUrl) {
+          // add the user data firebase firestore
+          remoteDataSource.addUser(UserModel(
+              id: result.user!.uid,
+              name: name,
+              email: email,
+              role: Role.etudiant,
+              image: imageUrl));
+        });
+      }
+
       return Right(result);
     } catch (e) {
       return Left(Failure("Server error : ${e.toString()}"));
     }
+  }
+
+  @override
+  Future<UserModel> getUser(String id) {
+    return remoteDataSource.getUser(id);
   }
 }

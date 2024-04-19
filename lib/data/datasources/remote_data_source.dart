@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eplatfrom/data/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../../utils/constants.dart';
 import '../models/formation.dart';
 
@@ -11,12 +14,17 @@ abstract class RemoteDataSource {
   Future<void> signOutUser();
   Future<void> forgetPasswordUser(String email);
   Future<void> addUser(UserModel user);
+  Future<UserModel> getUser(String id);
 
   // rest of the fonctions
   Future<Formation> addFormation(Formation formation);
   Future<Formation> editFormation(Formation formation);
   Future<Formation> deleteFormation(Formation formation);
   Stream<List<Formation>> listFormations();
+
+  //Upload files to flutter storage
+
+  Future<String> uploadFile(File file);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -68,7 +76,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     try {
       CollectionReference users =
           FirebaseFirestore.instance.collection(FirebaseCollections.users);
-      await users.add(user.toJson());
+      await users.doc(user.id).set(user.toJson());
     } catch (e) {
       print("Firestore error: $e");
     }
@@ -85,7 +93,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       return userCredential;
     } catch (e) {
       // Handle sign-in errors
-      
+
       print(e.toString());
       return null;
     }
@@ -122,5 +130,37 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<void> signOutUser() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  @override
+  Future<UserModel> getUser(String id) async {
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection(FirebaseCollections.users)
+        .doc(id)
+        .get();
+    return UserModel.fromSnapshot(user);
+  }
+
+  @override
+  Future<String> uploadFile(File file) async {
+    try {
+      // Create a reference to the Firebase Storage location
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('uploads/${DateTime.now().millisecondsSinceEpoch}');
+
+      // Upload the file to Firebase Storage
+      UploadTask uploadTask = ref.putFile(file);
+
+      // Wait for the upload to complete and get the download URL
+      TaskSnapshot snapshot = await uploadTask;
+      String downloadURL = await snapshot.ref.getDownloadURL();
+
+      // Return the download URL
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading file: $e');
+      return '';
+    }
   }
 }
