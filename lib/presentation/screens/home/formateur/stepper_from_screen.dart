@@ -29,11 +29,11 @@ class StepperFormScreen extends GetView<FormationController> {
                 decoration: const InputDecoration(labelText: 'Formateur'),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text('Add Seance'),
-              ),
-              const SizedBox(height: 10),
+              // ElevatedButton(
+              //   onPressed: () {},
+              //   child: const Text('Add Seance'),
+              // ),
+              // const SizedBox(height: 10),
               TextField(
                 controller: controller.descriptionController,
                 onChanged: (value) {},
@@ -41,7 +41,7 @@ class StepperFormScreen extends GetView<FormationController> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: ()=>controller.addFormation(),
+                onPressed: () => controller.addFormation(),
                 child: const Text('Submit'),
               ),
             ],

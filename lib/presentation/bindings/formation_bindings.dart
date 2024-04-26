@@ -19,7 +19,7 @@ class FormationBinding extends Bindings {
     Get.lazyPut(() => FetchFormationsUseCase(Get.find()));
     Get.lazyPut(() => DeleteFormationUseCase(Get.find()));
     Get.lazyPut(() => EditFormationUseCase(Get.find()));
-    Get.lazyPut(() => FormationController(
+    Get.lazyPut<FormationController>(() => FormationController(
         addFormationUseCase: Get.find(),
         editFormationUseCase: Get.find(),
         deleteFormationUseCase: Get.find(),

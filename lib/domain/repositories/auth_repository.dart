@@ -13,7 +13,8 @@ abstract class AuthRepository {
     File image,
   );
   Future<Either<Failure, void>> signin(String email, String password);
+  Future<UserModel> getUser(String id);
+
   Future<Either<Failure, void>> forgetPassword(String email);
   Future<Either<Failure, void>> logout();
-  Future<UserModel> getUser(String id);
 }

@@ -1,4 +1,3 @@
-
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import 'presentation/screens/auth/signin_screen.dart';
@@ -10,11 +9,17 @@ import 'presentation/screens/home/formateur/stepper_from_screen.dart';
 
 class AppRoutes {
   static final routes = [
-    GetPage(name: '/', page: () => const SignInScreen()),
-    GetPage(name: '/signup', page: () =>  SignUpScreen()),
+    // main routes
+    GetPage(
+      name: '/',
+      page: () =>  SignInScreen(),
+     // middlewares: [AuthMiddleware()],
+    ),
     GetPage(name: '/admin', page: () => const AdminHomeScreen()),
     GetPage(name: '/etudiant', page: () => const EtudiantHomeScreen()),
     GetPage(name: '/formateur', page: () => const FormateurHomeScreen()),
-    GetPage(name: '/addFormation', page: ()=> const StepperFormScreen())
+    // sub routes
+    GetPage(name: '/signup', page: () =>  SignUpScreen()),
+    GetPage(name: '/addFormation', page: () => const StepperFormScreen())
   ];
 }

@@ -25,6 +25,8 @@ class UserModel {
         image: json['image']);
   }
 
+  get value => null;
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

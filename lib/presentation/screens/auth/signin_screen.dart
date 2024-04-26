@@ -1,12 +1,12 @@
+import 'package:eplatfrom/presentation/controllers/signin_controller.dart';
 import 'package:eplatfrom/presentation/screens/auth/signup_screen.dart';
 import 'package:eplatfrom/utils/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../controllers/auth_controller.dart';
-
-class SignInScreen extends GetView<AuthController> {
-  const SignInScreen({super.key});
+class SignInScreen extends GetView<SignInController> {
+  final formKey = GlobalKey<FormState>();
+   SignInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class SignInScreen extends GetView<AuthController> {
           ),
           SingleChildScrollView(
             child: Form(
-              key: controller.signinFormKey,
+              key:formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -128,9 +128,7 @@ class SignInScreen extends GetView<AuthController> {
                   const SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
-                      controller.clear();
-
-                      Get.off(() => const SignUpScreen());
+                      Get.to(() =>  SignUpScreen());
                     },
                     child: const Text(
                       "Don't have an account? Sign up",

@@ -46,6 +46,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             return AppBar(
               title: titles[_selectedIndex],
               centerTitle: true,
+              automaticallyImplyLeading: false,
             );
           }
         }),

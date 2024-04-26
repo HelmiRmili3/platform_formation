@@ -11,7 +11,6 @@ class FormateurFormationScreen extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[900],
       body: Obx(() {
         return controller.formationsStream.value.isEmpty
             ? const Center(

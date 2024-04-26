@@ -32,18 +32,16 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[900],
       appBar: AppBar(
         title: Text(
           titles[_selectedIndex],
-          style: TextStyle(
+          style:const TextStyle(
             fontSize: 20,
-            color: Colors.white,
           ),
         ),
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.blueAccent,
         centerTitle: true,
-        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: Padding(
@@ -56,7 +54,7 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
                 child: screens[_selectedIndex],
               ),
             ),
-            SizedBox(height: 20),
+           const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -81,13 +79,13 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
           children: [
             Icon(
               icon,
-              color: _selectedIndex == index ? Colors.white : Colors.grey[400],
+              color: _selectedIndex == index ? Colors.black : Colors.grey[400],
             ),
-            SizedBox(height: 4),
+           const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: _selectedIndex == index ? Colors.white : Colors.grey[400],
+                color: _selectedIndex == index ? Colors.black : Colors.grey[400],
               ),
             ),
           ],

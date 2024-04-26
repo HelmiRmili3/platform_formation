@@ -51,7 +51,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     FirebaseFirestore.instance
         .collection(FirebaseCollections.courses)
         .doc(formation.id)
-        .delete();
+        .set(formation.toJson());
     return formation;
   }
 
@@ -144,19 +144,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<String> uploadFile(File file) async {
     try {
-      // Create a reference to the Firebase Storage location
       Reference ref = FirebaseStorage.instance
           .ref()
           .child('uploads/${DateTime.now().millisecondsSinceEpoch}');
-
-      // Upload the file to Firebase Storage
       UploadTask uploadTask = ref.putFile(file);
-
-      // Wait for the upload to complete and get the download URL
       TaskSnapshot snapshot = await uploadTask;
       String downloadURL = await snapshot.ref.getDownloadURL();
-
-      // Return the download URL
       return downloadURL;
     } catch (e) {
       print('Error uploading file: $e');

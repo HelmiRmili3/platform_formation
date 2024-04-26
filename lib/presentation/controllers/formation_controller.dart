@@ -10,8 +10,6 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 class FormationController extends GetxController {
-  final formKey = GlobalKey<FormState>();
-
   Rx<bool> isLeading = Rx(true);
 
   final nameController = TextEditingController();
@@ -47,7 +45,21 @@ class FormationController extends GetxController {
     results.fold((failure) {
       Get.snackbar("Error", failure.message);
     }, (r) {
-      Get.offAll(() => const FormateurHomeScreen());
+      Get.off(() => const FormateurHomeScreen());
+      clear();
+      Get.snackbar("Success", "Todo added successfully");
+    });
+  }
+
+  Future<void> editFormation(Formation formation) async {
+    final results = await addFormationUseCase(Params(formation.copyWith(
+      name: nameController.text.trim(),
+      description: descriptionController.text.trim(),
+    )));
+    results.fold((failure) {
+      Get.snackbar("Error", failure.message);
+    }, (r) {
+      Get.off(() => const FormateurHomeScreen());
       clear();
       Get.snackbar("Success", "Todo added successfully");
     });

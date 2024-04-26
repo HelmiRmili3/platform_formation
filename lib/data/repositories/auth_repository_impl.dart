@@ -58,10 +58,8 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await remoteDataSource.signUpUser(email, password);
 
       if (result != null) {
-        // upload image to flutter storage
 
         await remoteDataSource.uploadFile(image).then((imageUrl) {
-          // add the user data firebase firestore
           remoteDataSource.addUser(UserModel(
               id: result.user!.uid,
               name: name,

@@ -9,7 +9,9 @@ import '../../../utils/utils.dart';
 import '../../controllers/auth_controller.dart';
 
 class SignUpScreen extends GetView<AuthController> {
-  const SignUpScreen({super.key});
+  final formKey = GlobalKey<FormState>();
+
+   SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class SignUpScreen extends GetView<AuthController> {
           ),
           SingleChildScrollView(
             child: Form(
-              key: controller.signupFormKey,
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -185,7 +187,7 @@ class SignUpScreen extends GetView<AuthController> {
                   TextButton(
                     onPressed: () {
                       controller.clear();
-                      Get.off(() => const SignInScreen());
+                      Get.to(() => SignInScreen());
                     },
                     child: const Text(
                       "You have an account? Sign in",

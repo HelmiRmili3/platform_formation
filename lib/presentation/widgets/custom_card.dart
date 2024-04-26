@@ -17,6 +17,7 @@ class CustomCard extends StatelessWidget {
     return Container(
       height: 200,
       decoration: BoxDecoration(
+        color: Colors.blueAccent,
         borderRadius: BorderRadius.circular(10.0),
         image: DecorationImage(
           image: NetworkImage(imageUrl),

@@ -27,10 +27,11 @@ class Formation {
       id: json['id'],
       name: json['name'],
       formateur: json['formateur'],
-      seances: List<Seance>.from(json['seances'].map((seance) => Seance.fromJson(seance))),
+      seances: List<Seance>.from(
+          json['seances'].map((seance) => Seance.fromJson(seance))),
       releaseDate: DateTime.parse(json['releaseDate']),
       etudiants: List<String>.from(json['etudiants']),
-      totalHours: DateTime.parse(json['totalHours']), 
+      totalHours: DateTime.parse(json['totalHours']),
       description: json['description'],
     );
   }
@@ -43,7 +44,7 @@ class Formation {
       'seances': seances.map((seance) => seance.toJson()).toList(),
       'releaseDate': releaseDate.toIso8601String(),
       'etudiants': etudiants,
-      'totalHours': totalHours.toIso8601String(), 
+      'totalHours': totalHours.toIso8601String(),
       'description': description,
     };
   }
@@ -53,7 +54,25 @@ class Formation {
     json['id'] = snapshot.id;
     return Formation.fromJson(json);
   }
+  Formation copyWith({
+    String? id,
+    String? name,
+    String? formateur,
+    List<Seance>? seances,
+    DateTime? releaseDate,
+    List<String>? etudiants,
+    DateTime? totalHours,
+    String? description,
+  }) {
+    return Formation(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      formateur: formateur ?? this.formateur,
+      seances: seances ?? this.seances,
+      releaseDate: releaseDate ?? this.releaseDate,
+      etudiants: etudiants ?? this.etudiants,
+      totalHours: totalHours ?? this.totalHours,
+      description: description ?? this.description,
+    );
+  }
 }
-
-
-
