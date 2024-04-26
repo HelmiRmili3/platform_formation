@@ -1,13 +1,14 @@
+import 'package:eplatfrom/presentation/bindings/auth_bindings.dart';
 import 'package:eplatfrom/presentation/bindings/formation_bindings.dart';
+import 'package:eplatfrom/presentation/bindings/signin_bindings.dart';
 import 'package:get/get.dart';
 
 class AppBindings extends Bindings {
   @override
   void dependencies() {
-    // Bindings for formations feature
+   // UserBinding().dependencies;
+    SignInBinding().dependencies();
+    AuthBinding().dependencies();
     FormationBinding().dependencies();
-    
-    // Bindings for other feature
-    
   }
 }

@@ -4,7 +4,7 @@ import 'package:eplatfrom/presentation/screens/home/formateur/formateur_profile_
 import 'package:flutter/material.dart';
 
 class FormateurHomeScreen extends StatefulWidget {
-  const FormateurHomeScreen({super.key});
+  const FormateurHomeScreen({Key? key}) : super(key: key);
 
   @override
   State<FormateurHomeScreen> createState() => _FormateurHomeScreenState();
@@ -24,18 +24,25 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
     FormateurAbsenceScreen(),
     FormateurProfileScreen()
   ];
-  final List<Widget> titles = const [
-    Text("Formation"),
-    Text("Absence"),
-    Text("Profile")
+  final List<String> titles = const [
+    "Formation",
+    "Absence",
+    "Profile"
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: titles[_selectedIndex],
+        title: Text(
+          titles[_selectedIndex],
+          style:const TextStyle(
+            fontSize: 20,
+          ),
+        ),
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.blueAccent,
         centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -47,16 +54,14 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
                 child: screens[_selectedIndex],
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  _buildNavBarItem(Icons.home, 'Home', 0),
-                  _buildNavBarItem(Icons.remove, 'Absence', 1),
-                  _buildNavBarItem(Icons.person, 'Profile', 2),
-                ],
-              ),
+           const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                _buildNavBarItem(Icons.home, 'Formation', 0),
+                _buildNavBarItem(Icons.remove, 'Absence', 1),
+                _buildNavBarItem(Icons.person, 'Profile', 2),
+              ],
             ),
           ],
         ),
@@ -72,12 +77,17 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon,
-                color: _selectedIndex == index ? Colors.blue : Colors.grey),
-            Text(label,
-                style: TextStyle(
-                    color:
-                        _selectedIndex == index ? Colors.blue : Colors.grey)),
+            Icon(
+              icon,
+              color: _selectedIndex == index ? Colors.black : Colors.grey[400],
+            ),
+           const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: _selectedIndex == index ? Colors.black : Colors.grey[400],
+              ),
+            ),
           ],
         ),
       ),

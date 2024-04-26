@@ -6,7 +6,7 @@ class FormationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Formation screen'),
+      child: Text('admin Formation screen'),
     );
   }
 }
