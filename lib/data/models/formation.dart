@@ -41,7 +41,7 @@ class Formation {
       'id': id,
       'name': name,
       'formateur': formateur,
-      'seances': seances.map((seance) => seance.toJson()).toList(),
+      'seances': seances.map((seance) => seance).toList(),
       'releaseDate': releaseDate.toIso8601String(),
       'etudiants': etudiants,
       'totalHours': totalHours.toIso8601String(),

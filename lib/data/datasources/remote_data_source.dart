@@ -14,13 +14,16 @@ abstract class RemoteDataSource {
   Future<void> signOutUser();
   Future<void> forgetPasswordUser(String email);
   Future<void> addUser(UserModel user);
+  Future<void> deleteUser(String id);
   Future<UserModel> getUser(String id);
 
   // rest of the fonctions
   Future<Formation> addFormation(Formation formation);
   Future<Formation> editFormation(Formation formation);
-  Future<Formation> deleteFormation(Formation formation);
+  Future<void> deleteFormation(String formation);
+  // streams
   Stream<List<Formation>> listFormations();
+  Stream<List<UserModel>> listUsers();
 
   //Upload files to flutter storage
 
@@ -38,12 +41,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Formation> deleteFormation(Formation formation) async {
+  Future<void> deleteFormation(String formationId) async {
     FirebaseFirestore.instance
         .collection(FirebaseCollections.courses)
-        .doc(formation.id)
+        .doc(formationId)
         .delete();
-    return formation;
   }
 
   @override
@@ -57,14 +59,27 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Stream<List<Formation>> listFormations() {
+    return FirebaseFirestore.instance.collection("courses").snapshots().map(
+      (QuerySnapshot snapshot) {
+        return snapshot.docs.map(
+          (DocumentSnapshot doc) {
+            return Formation.fromSnapshot(doc);
+          },
+        ).toList();
+      },
+    );
+  }
+
+  @override
+  Stream<List<UserModel>> listUsers() {
     return FirebaseFirestore.instance
-        .collection(FirebaseCollections.courses)
+        .collection(FirebaseCollections.users)
         .snapshots()
         .map(
       (QuerySnapshot snapshot) {
         return snapshot.docs.map(
           (DocumentSnapshot doc) {
-            return Formation.fromSnapshot(doc);
+            return UserModel.fromSnapshot(doc);
           },
         ).toList();
       },
@@ -92,8 +107,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       );
       return userCredential;
     } catch (e) {
-      // Handle sign-in errors
-
       print(e.toString());
       return null;
     }
@@ -109,7 +122,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       );
       return userCredential;
     } catch (e) {
-      // Handle sign-up errors
       print(e.toString());
       return null;
     }
@@ -121,7 +133,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       return;
     } catch (e) {
-      // Handle sign-up errors
       print(e.toString());
       return;
     }
@@ -154,6 +165,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     } catch (e) {
       print('Error uploading file: $e');
       return '';
+    }
+  }
+
+  @override
+  Future<void> deleteUser(String id) async {
+    try {
+      CollectionReference users =
+          FirebaseFirestore.instance.collection(FirebaseCollections.users);
+      await users.doc(id).delete();
+    } catch (e) {
+      print("Firestore error: $e");
     }
   }
 }

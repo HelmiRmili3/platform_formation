@@ -1,8 +1,8 @@
-import 'package:eplatfrom/presentation/controllers/formation_controller.dart';
+import 'package:eplatfrom/presentation/controllers/formateur_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class StepperFormScreen extends GetView<FormationController> {
+class StepperFormScreen extends GetView<FormateurController> {
   const StepperFormScreen({super.key});
 
   @override

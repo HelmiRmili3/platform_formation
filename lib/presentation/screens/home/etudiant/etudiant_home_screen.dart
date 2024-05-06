@@ -18,9 +18,9 @@ class _EtudiantHomeScreenState extends State<EtudiantHomeScreen> {
     });
   }
 
-  final List<Widget> screens = const [
+  final List<Widget> screens = [
     EtudiantFormationScreen(),
-    EtudiantProfileScreen()
+    const EtudiantProfileScreen()
   ];
   final List<Widget> titles = const [Text("Formation"), Text("Profile")];
   @override

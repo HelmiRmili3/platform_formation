@@ -1,14 +1,16 @@
 import 'package:eplatfrom/data/models/formation.dart';
-import 'package:eplatfrom/presentation/controllers/formation_controller.dart';
+import 'package:eplatfrom/presentation/controllers/formateur_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class EditWidget extends GetView<FormationController> {
+class EditWidget extends GetView<FormateurController> {
   final Formation formation;
 
-  const EditWidget({required this.formation, super.key});
+  const EditWidget({required this.formation, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    controller.nameController.text = formation.name;
+    controller.descriptionController.text = formation.description;
     return Container(
       padding: const EdgeInsets.all(20),
       child: Form(
@@ -25,6 +27,7 @@ class EditWidget extends GetView<FormationController> {
             ),
             const SizedBox(height: 20),
             TextFormField(
+              controller: controller.nameController,
               decoration: InputDecoration(
                 labelText: 'Name',
                 enabledBorder: OutlineInputBorder(
@@ -36,10 +39,10 @@ class EditWidget extends GetView<FormationController> {
                   borderSide: const BorderSide(color: Colors.black),
                 ),
               ),
-              onChanged: (value) => controller.nameController,
             ),
             const SizedBox(height: 20),
             TextFormField(
+              controller: controller.descriptionController,
               decoration: InputDecoration(
                 labelText: 'Description',
                 enabledBorder: OutlineInputBorder(
@@ -51,7 +54,6 @@ class EditWidget extends GetView<FormationController> {
                   borderSide: const BorderSide(color: Colors.black),
                 ),
               ),
-              onChanged: (value) => controller.descriptionController,
               maxLines: 3,
             ),
             const SizedBox(height: 20),

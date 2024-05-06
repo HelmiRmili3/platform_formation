@@ -12,7 +12,7 @@ import '../../domain/usecases/signup_usecase.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController passwordController;
@@ -45,38 +45,38 @@ class AuthController extends GetxController {
               backgroundColor: Colors.redAccent,
             ), (r) {
       Get.snackbar("Success", "User SignOut successfully");
-      Get.to( SignInScreen());
+      Get.to(() => SignInScreen());
     });
   }
 
   Future<void> signUp() async {
     // if (signUpFormKey.currentState!.validate()) {
-      // GET THE IMAGE FROM RX<FILE?> TO FILE?
-      File? selectedImageFile = selectedImage.value;
+    // GET THE IMAGE FROM RX<FILE?> TO FILE?
+    File? selectedImageFile = selectedImage.value;
 
-      final results = await signUpUseCase(
-        nameController.text.trim(),
-        emailController.text.trim(),
-        passwordController.text.trim(),
-        selectedImageFile!,
-      );
-      results.fold(
-          (l) => Get.snackbar(
-                "Error",
-                l.message,
-                backgroundColor: Colors.redAccent,
-              ), (r) {
-        if (isAuthenticated) {
-          Get.snackbar("Success", "User Signup successfully");
-        } else {
-          Get.snackbar(
-            "Error",
-            "User not authenticated",
-            backgroundColor: Colors.redAccent,
-          );
-        }
-      });
-  //  }
+    final results = await signUpUseCase(
+      nameController.text.trim(),
+      emailController.text.trim(),
+      passwordController.text.trim(),
+      selectedImageFile!,
+    );
+    results.fold(
+        (l) => Get.snackbar(
+              "Error",
+              l.message,
+              backgroundColor: Colors.redAccent,
+            ), (r) {
+      if (isAuthenticated) {
+        Get.snackbar("Success", "User Signup successfully");
+      } else {
+        Get.snackbar(
+          "Error",
+          "User not authenticated",
+          backgroundColor: Colors.redAccent,
+        );
+      }
+    });
+    //  }
   }
 
   // Future<void> forgetPassword() async {

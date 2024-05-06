@@ -21,7 +21,7 @@ class SignInController extends GetxController {
   late TextEditingController passwordController;
 
   SignInController({
-   // required this.formKey,
+    // required this.formKey,
     required this.signInUseCase,
     required this.getUserUseCase,
   });
@@ -29,28 +29,27 @@ class SignInController extends GetxController {
   bool get isAuthenticated => user.value != null;
 
   Future<void> signIn() async {
-   // if (formKey.currentState!.validate()) {
-      final results = await signInUseCase(
-          emailController.text.trim(), passwordController.text.trim());
-      results.fold(
-          (l) => Get.snackbar(
-                "Error",
-                l.message,
-                backgroundColor: Colors.redAccent,
-              ), (r) {
-        _auth.authStateChanges().listen((User? firebaseUser) {
-          user.value = firebaseUser;
-          if (user.value != null) {
-            getUserUseCase.repository
-                .getUser(user.value!.uid)
-                .then((userModel) {
-              clear();
-              return Get.to(() => determineInitialRoute(userModel.role));
-            });
-          }
-        });
+    // if (formKey.currentState!.validate()) {
+    final results = await signInUseCase(
+        emailController.text.trim(), passwordController.text.trim());
+    results.fold(
+        (l) => Get.snackbar(
+              "Error",
+              l.message,
+              backgroundColor: Colors.redAccent,
+            ), (r) {
+      _auth.authStateChanges().listen((User? firebaseUser) {
+        user.value = firebaseUser;
+        if (user.value != null) {
+          getUserUseCase.repository.getUser(user.value!.uid).then((userModel) {
+            clear();
+            return Get.to(() => determineInitialRoute(userModel.role));
+          });
+        }
       });
-   /// }
+    });
+
+    /// }
   }
 
   void clear() {
@@ -72,13 +71,13 @@ class SignInController extends GetxController {
   Widget determineInitialRoute(Role role) {
     switch (role) {
       case Role.admin:
-        return const AdminHomeScreen();
+        return AdminHomeScreen();
       case Role.etudiant:
         return const EtudiantHomeScreen();
       case Role.formateur:
         return const FormateurHomeScreen();
       default:
-        return  SignInScreen();
+        return SignInScreen();
     }
   }
 

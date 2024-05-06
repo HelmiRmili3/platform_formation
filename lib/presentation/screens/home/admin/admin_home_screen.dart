@@ -1,11 +1,14 @@
+import 'package:eplatfrom/presentation/controllers/admin_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'archive_screen.dart';
 import 'formation_screen.dart';
 import 'profile_screen.dart';
 import 'users_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
-  const AdminHomeScreen({Key? key}) : super(key: key);
+  AdminHomeScreen({Key? key}) : super(key: key);
+  final AdminController controller = Get.find<AdminController>();
 
   @override
   State<AdminHomeScreen> createState() => _AdminHomeScreenState();
@@ -20,11 +23,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     });
   }
 
-  final List<Widget> screens = const [
+  final List<Widget> screens = [
     FormationScreen(),
     UsersScreen(),
-    ArchiveScreen(),
-    ProfileScreen()
+    const ArchiveScreen(),
+    const ProfileScreen()
   ];
 
   final List<Widget> titles = const [

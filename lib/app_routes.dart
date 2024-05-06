@@ -12,14 +12,14 @@ class AppRoutes {
     // main routes
     GetPage(
       name: '/',
-      page: () =>  SignInScreen(),
-     // middlewares: [AuthMiddleware()],
+      page: () => SignInScreen(),
+      // middlewares: [AuthMiddleware()],
     ),
-    GetPage(name: '/admin', page: () => const AdminHomeScreen()),
+    GetPage(name: '/admin', page: () => AdminHomeScreen()),
     GetPage(name: '/etudiant', page: () => const EtudiantHomeScreen()),
     GetPage(name: '/formateur', page: () => const FormateurHomeScreen()),
     // sub routes
-    GetPage(name: '/signup', page: () =>  SignUpScreen()),
+    GetPage(name: '/signup', page: () => SignUpScreen()),
     GetPage(name: '/addFormation', page: () => const StepperFormScreen())
   ];
 }

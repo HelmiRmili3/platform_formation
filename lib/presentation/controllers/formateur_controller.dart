@@ -1,15 +1,15 @@
 import 'package:eplatfrom/data/models/formation.dart';
-import 'package:eplatfrom/domain/usecases/formateur/formation/add.dart';
-import 'package:eplatfrom/domain/usecases/formateur/formation/delete.dart';
-import 'package:eplatfrom/domain/usecases/formateur/formation/edit.dart';
-import 'package:eplatfrom/domain/usecases/formateur/formation/fetch.dart';
+import 'package:eplatfrom/domain/usecases/formateur/add.dart';
+import 'package:eplatfrom/domain/usecases/formateur/delete.dart';
+import 'package:eplatfrom/domain/usecases/formateur/edit.dart';
+import 'package:eplatfrom/domain/usecases/formateur/fetch.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_home_screen.dart';
 import 'package:eplatfrom/utils/usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-class FormationController extends GetxController {
+class FormateurController extends GetxController {
   Rx<bool> isLeading = Rx(true);
 
   final nameController = TextEditingController();
@@ -22,7 +22,7 @@ class FormationController extends GetxController {
   final DeleteFormationUseCase deleteFormationUseCase;
   final FetchFormationsUseCase fetchFormationsUseCase;
 
-  FormationController({
+  FormateurController({
     required this.addFormationUseCase,
     required this.editFormationUseCase,
     required this.deleteFormationUseCase,
@@ -51,6 +51,17 @@ class FormationController extends GetxController {
     });
   }
 
+  Future<void> deleteFormation(String formationId) async {
+    final results = await deleteFormationUseCase(Params(formationId));
+    results.fold((failure) {
+      Get.snackbar("Error", failure.message);
+    }, (r) {
+      Get.off(() => const FormateurHomeScreen());
+      clear();
+      Get.snackbar("Success", "Formation Deleted successfully");
+    });
+  }
+
   Future<void> editFormation(Formation formation) async {
     final results = await addFormationUseCase(Params(formation.copyWith(
       name: nameController.text.trim(),
@@ -65,7 +76,8 @@ class FormationController extends GetxController {
     });
   }
 
-  Rx<List<Formation>> formationsStream = Rx<List<Formation>>([]);
+  final _formations = <Formation>[].obs;
+  List<Formation> get formations => _formations;
 
   @override
   void onInit() {
@@ -73,23 +85,17 @@ class FormationController extends GetxController {
     fetchFormations();
   }
 
+  void fetchFormations() {
+    fetchFormationsUseCase().listen(
+      (List<Formation> result) {
+        _formations.assignAll(result);
+      },
+    );
+  }
+
   clear() {
     nameController.clear();
     formateurController.clear();
     descriptionController.clear();
-  }
-
-  void fetchFormations() {
-    fetchFormationsUseCase(NoParams()).then((result) {
-      result.fold(
-        (failure) {
-          Get.snackbar("Error", failure.message);
-        },
-        (stream) {
-          formationsStream.bindStream(stream);
-        },
-      );
-      isLeading.value = false;
-    });
   }
 }

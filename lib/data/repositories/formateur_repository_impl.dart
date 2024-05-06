@@ -1,13 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:eplatfrom/data/datasources/remote_data_source.dart';
 import 'package:eplatfrom/data/models/formation.dart';
-import 'package:eplatfrom/domain/repositories/formation_repository.dart';
+import 'package:eplatfrom/domain/repositories/formateur_repository.dart';
 import 'package:eplatfrom/shared/errors/failure.dart';
 
-class FormationRepositoyImpl implements FormationRepository {
+class FormateurRepositoyImpl implements FormateurRepository {
   final RemoteDataSource remoteDataSource;
 
-  FormationRepositoyImpl({
+  FormateurRepositoyImpl({
     required this.remoteDataSource,
   });
 
@@ -22,9 +22,9 @@ class FormationRepositoyImpl implements FormationRepository {
   }
 
   @override
-  Future<Either<Failure, Formation>> delete(Formation formation) async {
+  Future<Either<Failure, void>> delete(String formationId) async {
     try {
-      final result = await remoteDataSource.deleteFormation(formation);
+      final result = await remoteDataSource.deleteFormation(formationId);
       return Right(result);
     } catch (e) {
       return Left(Failure("Server error : ${e.toString()}"));
@@ -42,12 +42,7 @@ class FormationRepositoyImpl implements FormationRepository {
   }
 
   @override
-  Future<Either<Failure, Stream<List<Formation>>>> getAll() async {
-    try {
-      final result = remoteDataSource.listFormations();
-      return Right(result);
-    } catch (e) {
-      return Left(Failure("Server error : ${e.toString()}"));
-    }
+  Stream<List<Formation>> getAll() {
+    return remoteDataSource.listFormations();
   }
 }
