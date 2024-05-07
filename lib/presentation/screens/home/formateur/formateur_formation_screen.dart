@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FormateurFormationScreen extends GetView<FormateurController> {
-  const FormateurFormationScreen({Key? key}) : super(key: key);
+  FormateurFormationScreen({Key? key}) : super(key: key);
+  @override
+  final FormateurController controller = Get.find<FormateurController>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class FormateurFormationScreen extends GetView<FormateurController> {
                         title: formation.name,
                         description: formation.description,
                         imageUrl:
-                            "https://i.pinimg.com/originals/6a/d9/0f/6ad90fb82cf534c03ba1d8c17a3124a7.jpg",
+                            "https://img.freepik.com/free-vector/blue-curve-background_53876-113112.jpg",
                       ),
                     ),
                   );
@@ -44,7 +46,10 @@ class FormateurFormationScreen extends GetView<FormateurController> {
               );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.to(() => const StepperFormScreen()),
+        onPressed: () {
+          controller.clear();
+          Get.to(() => const StepperFormScreen());
+        },
         backgroundColor: Colors.white,
         shape: const CircleBorder(eccentricity: 0.5),
         child: Icon(

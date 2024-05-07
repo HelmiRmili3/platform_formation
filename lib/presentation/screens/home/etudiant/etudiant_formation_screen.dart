@@ -1,7 +1,5 @@
-import 'package:eplatfrom/data/models/formation.dart';
 import 'package:eplatfrom/presentation/controllers/etudiant_controller.dart';
-import 'package:eplatfrom/presentation/screens/home/formateur/formation_details_screen.dart';
-import 'package:eplatfrom/presentation/screens/home/formateur/stepper_from_screen.dart';
+import 'package:eplatfrom/presentation/screens/home/etudiant/etudiant_formation_details_screen.dart';
 import 'package:eplatfrom/presentation/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +27,7 @@ class EtudiantFormationScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         Get.to(
-                          () => FormationDetailsScreen(
+                          () => EtudiantDetailsScreen(
                             formation: formation,
                           ),
                         );
@@ -38,7 +36,7 @@ class EtudiantFormationScreen extends StatelessWidget {
                         title: formation.name,
                         description: formation.description,
                         imageUrl:
-                            "https://i.pinimg.com/originals/6a/d9/0f/6ad90fb82cf534c03ba1d8c17a3124a7.jpg",
+                            "https://img.freepik.com/free-vector/blue-curve-background_53876-113112.jpg",
                       ),
                     ),
                   );

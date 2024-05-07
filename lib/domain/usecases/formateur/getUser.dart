@@ -1,8 +1,8 @@
 import 'package:eplatfrom/data/models/user.dart';
-import 'package:eplatfrom/domain/repositories/signin_repository.dart';
+import 'package:eplatfrom/domain/repositories/formateur_repository.dart';
 
 class GetUserUseCase {
-  final SignInRepository repository;
+  final FormateurRepository repository;
 
   GetUserUseCase(this.repository);
 

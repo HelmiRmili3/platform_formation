@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eplatfrom/data/models/seance.dart';
 import 'package:eplatfrom/data/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../models/formation.dart';
 
@@ -21,6 +23,8 @@ abstract class RemoteDataSource {
   Future<Formation> addFormation(Formation formation);
   Future<Formation> editFormation(Formation formation);
   Future<void> deleteFormation(String formation);
+
+  Future<void> addSeance(String formationId, Seance seance);
   // streams
   Stream<List<Formation>> listFormations();
   Stream<List<UserModel>> listUsers();
@@ -93,7 +97,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           FirebaseFirestore.instance.collection(FirebaseCollections.users);
       await users.doc(user.id).set(user.toJson());
     } catch (e) {
-      print("Firestore error: $e");
+      debugPrint("Firestore error: $e");
     }
   }
 
@@ -107,7 +111,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       );
       return userCredential;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -122,7 +126,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       );
       return userCredential;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -133,7 +137,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       return;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return;
     }
   }
@@ -163,7 +167,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       String downloadURL = await snapshot.ref.getDownloadURL();
       return downloadURL;
     } catch (e) {
-      print('Error uploading file: $e');
+      debugPrint('Error uploading file: $e');
       return '';
     }
   }
@@ -175,7 +179,33 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           FirebaseFirestore.instance.collection(FirebaseCollections.users);
       await users.doc(id).delete();
     } catch (e) {
-      print("Firestore error: $e");
+      debugPrint("Firestore error: $e");
+    }
+  }
+
+  @override
+  Future<void> addSeance(String formationId, Seance newSeance) async {
+    try {
+      DocumentReference formationRef =
+          FirebaseFirestore.instance.collection('formations').doc(formationId);
+
+      DocumentSnapshot formationSnapshot = await formationRef.get();
+
+      if (formationSnapshot.exists) {
+        // List<Map<String, dynamic>> currentSeances =
+        //     List<Map<String, dynamic>>.from(
+        //         formationSnapshot.data()?['seances']);
+
+        // currentSeances.add(newSeance.toMap());
+
+        //  await formationRef.update({'seances': currentSeances});
+
+        debugPrint('Seance added to formation successfully!');
+      } else {
+        debugPrint('Formation document does not exist!');
+      }
+    } catch (e) {
+      debugPrint('Error adding seance to formation: $e');
     }
   }
 }

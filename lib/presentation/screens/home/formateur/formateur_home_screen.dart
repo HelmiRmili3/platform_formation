@@ -1,4 +1,3 @@
-import 'package:eplatfrom/presentation/screens/home/formateur/formateur_absence_screen.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_formation_screen.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,15 +18,13 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
     });
   }
 
-  final List<Widget> screens = const [
+  final List<Widget> screens = [
     FormateurFormationScreen(),
-    FormateurAbsenceScreen(),
     FormateurProfileScreen()
   ];
   final List<String> titles = const [
     "Formation",
-    "Absence",
-    "Profile"
+    "Profile",
   ];
   @override
   Widget build(BuildContext context) {
@@ -35,7 +32,7 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
       appBar: AppBar(
         title: Text(
           titles[_selectedIndex],
-          style:const TextStyle(
+          style: const TextStyle(
             fontSize: 20,
           ),
         ),
@@ -54,13 +51,12 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
                 child: screens[_selectedIndex],
               ),
             ),
-           const SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 _buildNavBarItem(Icons.home, 'Formation', 0),
-                _buildNavBarItem(Icons.remove, 'Absence', 1),
-                _buildNavBarItem(Icons.person, 'Profile', 2),
+                _buildNavBarItem(Icons.person, 'Profile', 1),
               ],
             ),
           ],
@@ -81,11 +77,12 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
               icon,
               color: _selectedIndex == index ? Colors.black : Colors.grey[400],
             ),
-           const SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: _selectedIndex == index ? Colors.black : Colors.grey[400],
+                color:
+                    _selectedIndex == index ? Colors.black : Colors.grey[400],
               ),
             ),
           ],

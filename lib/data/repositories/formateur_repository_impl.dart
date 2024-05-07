@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:eplatfrom/data/datasources/remote_data_source.dart';
 import 'package:eplatfrom/data/models/formation.dart';
+import 'package:eplatfrom/data/models/user.dart';
 import 'package:eplatfrom/domain/repositories/formateur_repository.dart';
 import 'package:eplatfrom/shared/errors/failure.dart';
 
@@ -44,5 +45,10 @@ class FormateurRepositoyImpl implements FormateurRepository {
   @override
   Stream<List<Formation>> getAll() {
     return remoteDataSource.listFormations();
+  }
+
+  @override
+  Future<UserModel> getUser(String id) {
+    return remoteDataSource.getUser(id);
   }
 }

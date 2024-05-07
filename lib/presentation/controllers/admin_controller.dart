@@ -4,6 +4,7 @@ import 'package:eplatfrom/domain/usecases/admin/admin_delete_user_use_case.dart'
 import 'package:eplatfrom/domain/usecases/admin/admin_get_formations_use_case.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_user_use_case.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_users_use_case.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AdminController extends GetxController {
@@ -27,14 +28,14 @@ class AdminController extends GetxController {
   void fetchUsers() {
     adminGetUsersUseCase().listen((List<UserModel> result) {
       _users.assignAll(result);
-      print(result);
+      debugPrint(result.toString());
     });
   }
 
   void fetchFormations() {
     adminGetFormationsUseCase().listen((List<Formation> result) {
       _formations.assignAll(result);
-      print(result);
+      debugPrint(result.toString());
     });
   }
 

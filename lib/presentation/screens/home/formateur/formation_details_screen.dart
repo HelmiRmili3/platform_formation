@@ -140,7 +140,7 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                     ElevatedButton(
                       onPressed: () {
                         controller.deleteFormation(widget.formation.id);
-                        Get.to(() => const FormateurFormationScreen());
+                        Get.to(() => FormateurFormationScreen());
                       },
                       child: const Text("Delete Formation"),
                     )

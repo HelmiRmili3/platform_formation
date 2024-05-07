@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:eplatfrom/data/models/user.dart';
+import 'package:eplatfrom/domain/usecases/get_user_usecase.dart';
 import 'package:eplatfrom/presentation/screens/auth/signin_screen.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,9 +22,11 @@ class AuthController extends GetxController {
   final SignUpUseCase signUpUseCase;
   final SignOutUseCase signOutUseCase;
   final ForgetPasswordUseCase forgetPasswordUseCase;
-
+  final GetUserUseCase getUserUseCase;
   Rx<User?> user = Rx<User?>(null);
   Rx<File?> selectedImage = Rx<File?>(null);
+
+  final userData = Rx<UserModel?>(null);
 
   void setSelectedImage(File? image) {
     selectedImage.value = image;
@@ -32,21 +36,28 @@ class AuthController extends GetxController {
     required this.signUpUseCase,
     required this.signOutUseCase,
     required this.forgetPasswordUseCase,
+    required this.getUserUseCase,
   });
 
   bool get isAuthenticated => user.value != null;
 
+  Future<void> getUser() async {
+    userData.value = await getUserUseCase(user.value!.uid);
+  }
+
   Future<void> signOut() async {
     final results = await signOutUseCase();
     results.fold(
-        (l) => Get.snackbar(
-              "Error",
-              l.message,
-              backgroundColor: Colors.redAccent,
-            ), (r) {
-      Get.snackbar("Success", "User SignOut successfully");
-      Get.to(() => SignInScreen());
-    });
+      (l) => Get.snackbar(
+        "Error",
+        l.message,
+        backgroundColor: Colors.redAccent,
+      ),
+      (r) {
+        Get.snackbar("Success", "User SignOut successfully");
+        Get.to(() => SignInScreen());
+      },
+    );
   }
 
   Future<void> signUp() async {
@@ -61,36 +72,25 @@ class AuthController extends GetxController {
       selectedImageFile!,
     );
     results.fold(
-        (l) => Get.snackbar(
-              "Error",
-              l.message,
-              backgroundColor: Colors.redAccent,
-            ), (r) {
-      if (isAuthenticated) {
-        Get.snackbar("Success", "User Signup successfully");
-      } else {
-        Get.snackbar(
-          "Error",
-          "User not authenticated",
-          backgroundColor: Colors.redAccent,
-        );
-      }
-    });
+      (l) => Get.snackbar(
+        "Error",
+        l.message,
+        backgroundColor: Colors.redAccent,
+      ),
+      (r) {
+        if (isAuthenticated) {
+          Get.snackbar("Success", "User Signup successfully");
+        } else {
+          Get.snackbar(
+            "Error",
+            "User not authenticated",
+            backgroundColor: Colors.redAccent,
+          );
+        }
+      },
+    );
     //  }
   }
-
-  // Future<void> forgetPassword() async {
-  //   if (forgetPasswordFormKey.currentState!.validate()) {
-  //     final results = await forgetPasswordUseCase(emailController.text.trim());
-  //     results.fold(
-  //         (l) => Get.snackbar(
-  //               "Error",
-  //               l.message,
-  //               backgroundColor: Colors.redAccent,
-  //             ),
-  //         (r) => Get.snackbar("Success", "Email sended successfully"));
-  //   }
-  // }
 
   @override
   void onInit() {
@@ -101,7 +101,6 @@ class AuthController extends GetxController {
     nameController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    super.onInit();
   }
 
   @override

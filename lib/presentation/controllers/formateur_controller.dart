@@ -1,16 +1,20 @@
 import 'package:eplatfrom/data/models/formation.dart';
+import 'package:eplatfrom/data/models/user.dart';
 import 'package:eplatfrom/domain/usecases/formateur/add.dart';
 import 'package:eplatfrom/domain/usecases/formateur/delete.dart';
 import 'package:eplatfrom/domain/usecases/formateur/edit.dart';
 import 'package:eplatfrom/domain/usecases/formateur/fetch.dart';
+import 'package:eplatfrom/domain/usecases/get_user_usecase.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_home_screen.dart';
 import 'package:eplatfrom/utils/usecase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 class FormateurController extends GetxController {
   Rx<bool> isLeading = Rx(true);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final nameController = TextEditingController();
   final formateurController = TextEditingController();
@@ -21,13 +25,22 @@ class FormateurController extends GetxController {
   final EditFormationUseCase editFormationUseCase;
   final DeleteFormationUseCase deleteFormationUseCase;
   final FetchFormationsUseCase fetchFormationsUseCase;
+  final GetUserUseCase getUserUseCase;
+
+  Rx<User?> user = Rx<User?>(null);
+  Rx<UserModel?> userData = Rx<UserModel?>(null);
 
   FormateurController({
     required this.addFormationUseCase,
     required this.editFormationUseCase,
     required this.deleteFormationUseCase,
     required this.fetchFormationsUseCase,
+    required this.getUserUseCase,
   });
+
+  Future<void> getUser() async {
+    userData.value = await getUserUseCase(user.value!.uid);
+  }
 
   Future<void> addFormation() async {
     final results = await addFormationUseCase(Params(
@@ -76,6 +89,14 @@ class FormateurController extends GetxController {
     });
   }
 
+  void fetchFormations() {
+    fetchFormationsUseCase().listen(
+      (List<Formation> result) {
+        _formations.assignAll(result);
+      },
+    );
+  }
+
   final _formations = <Formation>[].obs;
   List<Formation> get formations => _formations;
 
@@ -83,14 +104,6 @@ class FormateurController extends GetxController {
   void onInit() {
     super.onInit();
     fetchFormations();
-  }
-
-  void fetchFormations() {
-    fetchFormationsUseCase().listen(
-      (List<Formation> result) {
-        _formations.assignAll(result);
-      },
-    );
   }
 
   clear() {
