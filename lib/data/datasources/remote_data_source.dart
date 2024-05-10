@@ -23,8 +23,10 @@ abstract class RemoteDataSource {
   Future<Formation> addFormation(Formation formation);
   Future<Formation> editFormation(Formation formation);
   Future<void> deleteFormation(String formation);
+  Future<List<Seance>> listSeances(String formationId);
 
   Future<void> addSeance(String formationId, Seance seance);
+
   // streams
   Stream<List<Formation>> listFormations();
   Stream<List<UserModel>> listUsers();
@@ -186,26 +188,36 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<void> addSeance(String formationId, Seance newSeance) async {
     try {
-      DocumentReference formationRef =
-          FirebaseFirestore.instance.collection('formations').doc(formationId);
+      DocumentReference formationRef = await FirebaseFirestore.instance
+          .collection(FirebaseCollections.courses)
+          .doc(formationId)
+          .collection("seances")
+          .add(newSeance
+              .toJson()); // Assuming newSeance has a toMap method to convert it to a Map
 
-      DocumentSnapshot formationSnapshot = await formationRef.get();
-
-      if (formationSnapshot.exists) {
-        // List<Map<String, dynamic>> currentSeances =
-        //     List<Map<String, dynamic>>.from(
-        //         formationSnapshot.data()?['seances']);
-
-        // currentSeances.add(newSeance.toMap());
-
-        //  await formationRef.update({'seances': currentSeances});
-
-        debugPrint('Seance added to formation successfully!');
-      } else {
-        debugPrint('Formation document does not exist!');
-      }
+      debugPrint('Seance added with ID: ${formationRef.id}');
     } catch (e) {
       debugPrint('Error adding seance to formation: $e');
     }
+  }
+
+  @override
+  Future<List<Seance>> listSeances(String formationId) async {
+    // Get the reference to the collection of seances under the specified formationId
+    CollectionReference seancesRef = FirebaseFirestore.instance
+        .collection(FirebaseCollections.courses)
+        .doc(formationId)
+        .collection(FirebaseCollections.seances);
+
+    // Get the documents from Firestore
+    QuerySnapshot seancesSnapshot = await seancesRef.get();
+
+    // Convert each document into a Seance object and store them in a list
+    List<Seance> seancesList = seancesSnapshot.docs.map((doc) {
+      return Seance.fromSnapshot(doc);
+    }).toList();
+
+    // Return the list of seances
+    return seancesList;
   }
 }

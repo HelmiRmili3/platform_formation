@@ -1,5 +1,6 @@
-import 'package:eplatfrom/data/models/user.dart';
 import 'package:eplatfrom/domain/repositories/formateur_repository.dart';
+
+import '../../../data/models/user.dart';
 
 class GetUserUseCase {
   final FormateurRepository repository;

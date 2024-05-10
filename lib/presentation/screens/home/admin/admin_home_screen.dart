@@ -27,7 +27,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     FormationScreen(),
     UsersScreen(),
     const ArchiveScreen(),
-    const ProfileScreen()
+    ProfileScreen()
   ];
 
   final List<Widget> titles = const [

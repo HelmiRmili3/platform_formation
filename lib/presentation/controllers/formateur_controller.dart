@@ -1,9 +1,12 @@
 import 'package:eplatfrom/data/models/formation.dart';
+import 'package:eplatfrom/data/models/seance.dart';
 import 'package:eplatfrom/data/models/user.dart';
 import 'package:eplatfrom/domain/usecases/formateur/add.dart';
+import 'package:eplatfrom/domain/usecases/formateur/addseance.dart';
 import 'package:eplatfrom/domain/usecases/formateur/delete.dart';
 import 'package:eplatfrom/domain/usecases/formateur/edit.dart';
 import 'package:eplatfrom/domain/usecases/formateur/fetch.dart';
+import 'package:eplatfrom/domain/usecases/formateur/get_seances.dart';
 import 'package:eplatfrom/domain/usecases/get_user_usecase.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_home_screen.dart';
 import 'package:eplatfrom/utils/usecase.dart';
@@ -25,21 +28,30 @@ class FormateurController extends GetxController {
   final EditFormationUseCase editFormationUseCase;
   final DeleteFormationUseCase deleteFormationUseCase;
   final FetchFormationsUseCase fetchFormationsUseCase;
+  final AddSeanceUserUseCase addSeanceUserUseCase;
+  final FetchSeancessUseCase fetchSeancessUseCase;
   final GetUserUseCase getUserUseCase;
 
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+
   Rx<User?> user = Rx<User?>(null);
-  Rx<UserModel?> userData = Rx<UserModel?>(null);
+  Rx<UserModel?> data = Rx<UserModel?>(null);
 
   FormateurController({
     required this.addFormationUseCase,
     required this.editFormationUseCase,
     required this.deleteFormationUseCase,
     required this.fetchFormationsUseCase,
+    required this.addSeanceUserUseCase,
+    required this.fetchSeancessUseCase,
     required this.getUserUseCase,
   });
 
-  Future<void> getUser() async {
-    userData.value = await getUserUseCase(user.value!.uid);
+  Future<void> addSeance(String formationId) async {
+    Seance seance =
+        Seance(date: selectedDate, time: selectedTime, salle: "A2", period: 1);
+    await addSeanceUserUseCase(formationId, seance);
   }
 
   Future<void> addFormation() async {
@@ -89,26 +101,41 @@ class FormateurController extends GetxController {
     });
   }
 
-  void fetchFormations() {
-    fetchFormationsUseCase().listen(
-      (List<Formation> result) {
-        _formations.assignAll(result);
-      },
-    );
+  void fetchFormations() async {
+    // Get the logged-in user
+    UserModel? userdata = await getUserUseCase(user.value!.uid);
+
+    // Check if user is not null
+    fetchFormationsUseCase().listen((List<Formation> result) {
+      // Filter formations by user ID
+      List<Formation> userFormations = result
+          .where((formation) => formation.name == userdata.name)
+          .toList();
+      _formations.assignAll(userFormations);
+    });
+    }
+
+  Future<List<Seance>> fetchSeances(String formationId) async {
+    List<Seance> seancesList = await fetchSeancessUseCase(formationId);
+    return seancesList;
   }
 
   final _formations = <Formation>[].obs;
   List<Formation> get formations => _formations;
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchFormations();
-  }
-
   clear() {
     nameController.clear();
     formateurController.clear();
     descriptionController.clear();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    _auth.authStateChanges().listen((User? firebaseUser) {
+      user.value = firebaseUser;
+    });
+    fetchFormations();
+    // getUser();
   }
 }

@@ -30,20 +30,20 @@ class StepperFormScreen extends GetView<FormateurController> {
                   onChanged: (value) {},
                   decoration: const InputDecoration(labelText: 'Formateur'),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const SafeArea(
-                            minimum: EdgeInsets.all(16),
-                            child: DateTimePickerWidget());
-                      },
-                    );
-                  },
-                  child: const Text('Add Seance'),
-                ),
+                // const SizedBox(height: 20),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     showModalBottomSheet(
+                //       context: context,
+                //       builder: (BuildContext context) {
+                //         return const SafeArea(
+                //             minimum: EdgeInsets.all(16),
+                //             child: DateTimePickerWidget(formation: null,));
+                //       },
+                //     );
+                //   },
+                //   child: const Text('Add Seance'),
+                // ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: controller.descriptionController,
@@ -60,70 +60,6 @@ class StepperFormScreen extends GetView<FormateurController> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class DateTimePickerWidget extends StatefulWidget {
-  const DateTimePickerWidget({Key? key}) : super(key: key);
-
-  @override
-  DateTimePickerWidgetState createState() => DateTimePickerWidgetState();
-}
-
-class DateTimePickerWidgetState extends State<DateTimePickerWidget> {
-  DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay.now();
-  final FormateurController controller = Get.find<FormateurController>();
-
-  Future<void> _selectDateAndTime(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (pickedDate != null) {
-      final TimeOfDay? pickedTime = await showTimePicker(
-        // ignore: use_build_context_synchronously
-        context: context,
-        initialTime: selectedTime,
-      );
-
-      if (pickedTime != null) {
-        setState(() {
-          selectedDate = pickedDate;
-          selectedTime = pickedTime;
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'Selected Date: ${selectedDate.toLocal().toString().split(' ')[0]}',
-          style: const TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          'Selected Time: ${selectedTime.format(context)}',
-          style: const TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () => _selectDateAndTime(context),
-          child: const Text('Select Date and Time'),
-        ),
-        ElevatedButton(
-          onPressed: () {},
-          child: const Text('Confirme'),
-        ),
-      ],
     );
   }
 }

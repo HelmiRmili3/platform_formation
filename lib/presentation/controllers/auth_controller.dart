@@ -25,8 +25,7 @@ class AuthController extends GetxController {
   final GetUserUseCase getUserUseCase;
   Rx<User?> user = Rx<User?>(null);
   Rx<File?> selectedImage = Rx<File?>(null);
-
-  final userData = Rx<UserModel?>(null);
+  Rx<UserModel?> data = Rx<UserModel?>(null);
 
   void setSelectedImage(File? image) {
     selectedImage.value = image;
@@ -42,7 +41,11 @@ class AuthController extends GetxController {
   bool get isAuthenticated => user.value != null;
 
   Future<void> getUser() async {
-    userData.value = await getUserUseCase(user.value!.uid);
+    if (user.value != null) {
+      String userId = user.value!.uid;
+      data.value = await getUserUseCase(userId);
+    }
+    update();
   }
 
   Future<void> signOut() async {
@@ -95,9 +98,13 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     _auth.authStateChanges().listen((User? firebaseUser) {
       user.value = firebaseUser;
+      getUser();
     });
+    getUser();
+
     nameController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();

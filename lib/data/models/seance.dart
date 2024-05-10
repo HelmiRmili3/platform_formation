@@ -36,10 +36,21 @@ class Seance {
   }
 
   // Create a Seance instance from a DocumentSnapshot
+  // Create a Seance instance from a DocumentSnapshot
   factory Seance.fromSnapshot(DocumentSnapshot snapshot) {
+    // Parsing 'date' field as a string in ISO 8601 format
+    DateTime dateTime = DateTime.parse(snapshot['date']);
+
+    // Parsing 'time' field as a string in 'HH:mm' format
+    List<String> timeParts = snapshot['time'].split(':');
+    TimeOfDay timeOfDay = TimeOfDay(
+      hour: int.parse(timeParts[0]),
+      minute: int.parse(timeParts[1]),
+    );
+
     return Seance(
-      date: snapshot['date'],
-      time: snapshot['time'],
+      date: dateTime,
+      time: timeOfDay,
       salle: snapshot['salle'],
       period: snapshot['period'],
     );

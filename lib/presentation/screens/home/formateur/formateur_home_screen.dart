@@ -32,9 +32,7 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
       appBar: AppBar(
         title: Text(
           titles[_selectedIndex],
-          style: const TextStyle(
-            fontSize: 20,
-          ),
+          style: const TextStyle(fontSize: 20, color: Colors.white),
         ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.blueAccent,

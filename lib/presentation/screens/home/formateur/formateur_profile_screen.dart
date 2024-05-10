@@ -1,4 +1,5 @@
 import 'package:eplatfrom/presentation/controllers/auth_controller.dart';
+// import 'package:eplatfrom/presentation/controllers/formateur_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,6 +7,7 @@ class FormateurProfileScreen extends StatelessWidget {
   FormateurProfileScreen({Key? key}) : super(key: key);
 
   final AuthController controller = Get.find<AuthController>();
+  // final FormateurController fcontroller = Get.find<FormateurController>();
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +17,29 @@ class FormateurProfileScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Obx(() {
-              //   if (controller.userData.value != null) {
-              //     return Text(
-              //       controller.user.value!.uid,
-              //     );
-              //   } else {
-              //     return CircularProgressIndicator();
-              //   }
-              // }),
+              CircleAvatar(
+                radius: 60,
+                backgroundImage: controller.data.value?.image != null
+                    ? NetworkImage(controller.data.value!.image)
+                        as ImageProvider<Object>
+                    : const NetworkImage(
+                        "https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png"),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                controller.data.value?.name ?? 'Name not available',
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                controller.data.value?.email ?? 'Email not available',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () => controller.signOut(),
-                child: const Text("LogOut"),
+                child: const Text("Log Out"),
               ),
             ],
           ),

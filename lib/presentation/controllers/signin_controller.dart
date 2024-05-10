@@ -13,7 +13,6 @@ import '../../utils/enums.dart';
 class SignInController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GetUserUseCase getUserUseCase;
-  //final formKey;
   Rx<User?> user = Rx<User?>(null);
 
   final SignInUseCase signInUseCase;
@@ -21,7 +20,6 @@ class SignInController extends GetxController {
   late TextEditingController passwordController;
 
   SignInController({
-    // required this.formKey,
     required this.signInUseCase,
     required this.getUserUseCase,
   });
@@ -29,7 +27,6 @@ class SignInController extends GetxController {
   bool get isAuthenticated => user.value != null;
 
   Future<void> signIn() async {
-    // if (formKey.currentState!.validate()) {
     final results = await signInUseCase(
         emailController.text.trim(), passwordController.text.trim());
     results.fold(
@@ -65,7 +62,6 @@ class SignInController extends GetxController {
     });
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    super.onInit();
   }
 
   Widget determineInitialRoute(Role role) {

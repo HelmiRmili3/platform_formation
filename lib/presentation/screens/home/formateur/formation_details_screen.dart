@@ -1,6 +1,8 @@
 import 'package:eplatfrom/data/models/formation.dart';
+import 'package:eplatfrom/data/models/seance.dart';
 import 'package:eplatfrom/presentation/controllers/formateur_controller.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_formation_screen.dart';
+import 'package:eplatfrom/presentation/widgets/data_time_picker.dart';
 import 'package:eplatfrom/presentation/widgets/edit_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +21,23 @@ class FormationDetailsScreen extends StatefulWidget {
 class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
   String _selectedMenuItem = '';
   final FormateurController controller = Get.find<FormateurController>();
+  late Formation formation; // Declare formation variable here
+  late List<Seance> seances;
+  @override
+  void initState() {
+    super.initState();
+    formation = widget.formation;
+    // Since fetchSeances returns a Future<List<Seance>>, we need to await its result
+    controller.fetchSeances(formation.id).then((seancesList) {
+      setState(() {
+        seances =
+            seancesList; // Assign the fetched list of seances to seances variable
+      });
+    }).catchError((error) {
+      debugPrint('Error fetching seances: $error');
+      // Handle error accordingly
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +47,7 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
         foregroundColor: Colors.white,
         backgroundColor: Colors.blueAccent,
         title: Text(
-          widget.formation.name.toUpperCase(),
+          formation.name.toUpperCase(), // Access formation directly
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
@@ -97,12 +116,12 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      widget.formation.description,
+                      formation.description,
                       style: const TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      widget.formation.name,
+                      formation.name,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -110,17 +129,17 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Formateur: ${widget.formation.formateur}',
+                      'Formateur: ${formation.formateur}',
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      'Release Date: ${widget.formation.releaseDate.toString()}',
+                      'Release Date: ${formation.releaseDate.toString()}',
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      'Total Hours: ${widget.formation.totalHours.toString()}',
+                      'Total Hours: ${formation.totalHours.toString()}',
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 10),
@@ -133,13 +152,28 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      widget.formation.description,
+                      formation.description,
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        controller.deleteFormation(widget.formation.id);
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SafeArea(
+                                minimum: const EdgeInsets.all(16),
+                                child:
+                                    DateTimePickerWidget(formation: formation));
+                          },
+                        );
+                      },
+                      child: const Text("Add Seance"),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        controller.deleteFormation(formation.id);
                         Get.to(() => FormateurFormationScreen());
                       },
                       child: const Text("Delete Formation"),
@@ -147,8 +181,7 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                   ],
                 ),
               ),
-            if (_selectedMenuItem == 'edit')
-              EditWidget(formation: widget.formation),
+            if (_selectedMenuItem == 'edit') EditWidget(formation: formation),
             if (_selectedMenuItem == 'Seances')
               Container(
                 padding: const EdgeInsets.all(20),
@@ -167,18 +200,19 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 10,
+                      itemCount: seances.length,
                       itemBuilder: (BuildContext context, int index) {
+                        Seance seance = seances[index];
                         return Card(
                           elevation: 5,
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: ListTile(
                             title: Text(
-                              "Session Title $index",
+                              "Session Title ${seance.salle.toString()}",
                               style: const TextStyle(fontSize: 18),
                             ),
                             subtitle: Text(
-                              "Session Date $index",
+                              "Session Date ${seance.date.toString()}",
                               style: const TextStyle(fontSize: 14),
                             ),
                           ),
