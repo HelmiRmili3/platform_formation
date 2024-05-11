@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SignInScreen extends GetView<SignInController> {
+  SignInScreen({super.key});
   final formKey = GlobalKey<FormState>();
-   SignInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class SignInScreen extends GetView<SignInController> {
           ),
           SingleChildScrollView(
             child: Form(
-              key:formKey,
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -109,7 +109,11 @@ class SignInScreen extends GetView<SignInController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 80),
                     child: ElevatedButton(
-                      onPressed: () => controller.signIn(),
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          controller.signIn();
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         backgroundColor: Colors.white,
@@ -117,18 +121,20 @@ class SignInScreen extends GetView<SignInController> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
+                      child: controller.isloading.value
+                          ? const CircularProgressIndicator()
+                          : const Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
-                      Get.to(() =>  SignUpScreen());
+                      Get.to(() => SignUpScreen());
                     },
                     child: const Text(
                       "Don't have an account? Sign up",

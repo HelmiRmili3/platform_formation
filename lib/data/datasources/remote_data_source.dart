@@ -24,12 +24,16 @@ abstract class RemoteDataSource {
   Future<Formation> editFormation(Formation formation);
   Future<void> deleteFormation(String formation);
   Future<List<Seance>> listSeances(String formationId);
+  Future<void> joinFormation(String formationId, UserModel joinedUser);
+  Future<bool> isJoined(String formationId, String etudiantId);
 
   Future<void> addSeance(String formationId, Seance seance);
 
   // streams
+  Stream<List<Formation>> listFormationsArchive();
   Stream<List<Formation>> listFormations();
   Stream<List<UserModel>> listUsers();
+  Future<List<UserModel>> listEtudiantOfFormation(String formationId);
 
   //Upload files to flutter storage
 
@@ -48,10 +52,38 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<void> deleteFormation(String formationId) async {
-    FirebaseFirestore.instance
-        .collection(FirebaseCollections.courses)
-        .doc(formationId)
-        .delete();
+    try {
+      // Step 1: Retrieve the Document from the Source Collection
+      DocumentSnapshot formationSnapshot = await FirebaseFirestore.instance
+          .collection(FirebaseCollections.courses)
+          .doc(formationId)
+          .get();
+
+      if (formationSnapshot.exists) {
+        // Step 2: Add the Document to the Destination Collection
+        Map<String, dynamic> formationData =
+            formationSnapshot.data()! as Map<String, dynamic>;
+
+        await FirebaseFirestore.instance
+            .collection(FirebaseCollections.archive)
+            .doc(formationId)
+            .set(formationData);
+
+        // Step 3: Delete the Document from the Source Collection
+        await FirebaseFirestore.instance
+            .collection(FirebaseCollections.courses)
+            .doc(formationId)
+            .delete();
+
+        print('Formation with ID $formationId moved to archive successfully.');
+      } else {
+        // Handle if the document doesn't exist
+        print('Document with ID $formationId does not exist.');
+      }
+    } catch (error) {
+      // Handle any errors that occur during the process
+      print('Error deleting formation: $error');
+    }
   }
 
   @override
@@ -65,7 +97,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Stream<List<Formation>> listFormations() {
-    return FirebaseFirestore.instance.collection("courses").snapshots().map(
+    return FirebaseFirestore.instance
+        .collection(FirebaseCollections.courses)
+        .snapshots()
+        .map(
       (QuerySnapshot snapshot) {
         return snapshot.docs.map(
           (DocumentSnapshot doc) {
@@ -219,5 +254,78 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
     // Return the list of seances
     return seancesList;
+  }
+
+  @override
+  Future<void> joinFormation(
+    String formationId,
+    UserModel joinedUser,
+  ) async {
+    try {
+      DocumentReference docRef = FirebaseFirestore.instance
+          .collection(FirebaseCollections.courses)
+          .doc(formationId)
+          .collection("etudiants")
+          .doc(joinedUser.id);
+      await docRef.set(joinedUser.toJson());
+      debugPrint('Seance added with ID: ${docRef.id}');
+    } catch (e) {
+      debugPrint('Error adding seance to formation: $e');
+    }
+  }
+
+  @override
+  Future<bool> isJoined(String formationId, String etudiantId) async {
+    try {
+      // Check if the user is already in the list of students
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection(FirebaseCollections.courses)
+          .doc(formationId)
+          .collection("etudiants")
+          .doc(etudiantId)
+          .get();
+
+      // Return true if the document exists, indicating the user is already in the list
+      return docSnapshot.exists;
+    } catch (e) {
+      debugPrint('Error checking user : $e');
+      return false; // Return false in case of an error
+    }
+  }
+
+  @override
+  Future<List<UserModel>> listEtudiantOfFormation(String formationId) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(FirebaseCollections.courses)
+          .doc(formationId)
+          .collection(FirebaseCollections.etudiants)
+          .get();
+
+      List<UserModel> etudiants = querySnapshot.docs.map((doc) {
+        return UserModel.fromSnapshot(doc);
+      }).toList();
+
+      return etudiants;
+    } catch (e) {
+      print('Error fetching etudiants: $e');
+      throw e;
+    }
+  }
+
+  @override
+  Stream<List<Formation>> listFormationsArchive() {
+    return FirebaseFirestore.instance
+        .collection(FirebaseCollections.archive)
+        .snapshots()
+        .map(
+      (QuerySnapshot snapshot) {
+        return snapshot.docs.map(
+          (DocumentSnapshot doc) {
+            return Formation.fromSnapshot(doc);
+          },
+        ).toList();
+      },
+    );
   }
 }

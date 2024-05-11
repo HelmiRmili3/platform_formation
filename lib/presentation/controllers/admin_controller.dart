@@ -1,6 +1,7 @@
 import 'package:eplatfrom/data/models/formation.dart';
 import 'package:eplatfrom/data/models/user.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_delete_user_use_case.dart';
+import 'package:eplatfrom/domain/usecases/admin/admin_get_formation_archive.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_formations_use_case.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_user_use_case.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_users_use_case.dart';
@@ -17,8 +18,10 @@ class AdminController extends GetxController {
   final AdminGetFormationsUseCase adminGetFormationsUseCase;
   final AdminGetUserUseCase adminGetUserUseCase;
   final AdminDeleteUserUseCase adminDeleteUserUseCase;
+  final AdminGetFormationsArchiveUseCase adminGetFormationsArchiveUseCase;
   final GetUserUseCase getUserUseCase;
   AdminController({
+    required this.adminGetFormationsArchiveUseCase,
     required this.adminGetUsersUseCase,
     required this.adminGetFormationsUseCase,
     required this.adminGetUserUseCase,
@@ -31,6 +34,8 @@ class AdminController extends GetxController {
 
   final _formations = <Formation>[].obs;
   List<Formation> get formations => _formations;
+  final _formationsArchive = <Formation>[].obs;
+  List<Formation> get formationsArchive => _formationsArchive;
 
   Rx<User?> user = Rx<User?>(null);
   Rx<UserModel?> data = Rx<UserModel?>(null);
@@ -45,6 +50,13 @@ class AdminController extends GetxController {
   void fetchFormations() {
     adminGetFormationsUseCase().listen((List<Formation> result) {
       _formations.assignAll(result);
+      debugPrint(result.toString());
+    });
+  }
+
+  void fetchFormationsArchive() {
+    adminGetFormationsArchiveUseCase().listen((List<Formation> result) {
+      _formationsArchive.assignAll(result);
       debugPrint(result.toString());
     });
   }
@@ -65,8 +77,8 @@ class AdminController extends GetxController {
     super.onInit();
     _auth.authStateChanges().listen((User? firebaseUser) {
       user.value = firebaseUser;
-      // debugPrint("#######################${userData.value!.email}");
     });
+    fetchFormationsArchive();
     fetchFormations();
     fetchUsers();
     getUser();

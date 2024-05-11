@@ -29,4 +29,9 @@ class AdminRepositoryImpl implements AdminRepository {
   Future<void> deleteUser(String userId) {
     return remoteDataSource.deleteUser(userId);
   }
+
+  @override
+  Stream<List<Formation>> getFormationsArchive() {
+    return remoteDataSource.listFormationsArchive();
+  }
 }

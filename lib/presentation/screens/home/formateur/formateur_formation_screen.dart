@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 
 class FormateurFormationScreen extends GetView<FormateurController> {
   FormateurFormationScreen({Key? key}) : super(key: key);
-  @override
-  final FormateurController controller = Get.find<FormateurController>();
+  // @override
+  // final FormateurController controller = Get.find<FormateurController>();
 
   @override
   Widget build(BuildContext context) {

@@ -8,5 +8,6 @@ abstract class AdminRepository {
 
   //streams
   Stream<List<Formation>> getFormations();
+  Stream<List<Formation>> getFormationsArchive();
   Stream<List<UserModel>> getUsers();
 }

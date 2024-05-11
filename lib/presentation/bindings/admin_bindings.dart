@@ -2,6 +2,7 @@ import 'package:eplatfrom/data/datasources/remote_data_source.dart';
 import 'package:eplatfrom/data/repositories/admin_repository_impl.dart';
 import 'package:eplatfrom/domain/repositories/admin_repository.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_delete_user_use_case.dart';
+import 'package:eplatfrom/domain/usecases/admin/admin_get_formation_archive.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_formations_use_case.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_user_use_case.dart';
 import 'package:eplatfrom/domain/usecases/admin/admin_get_users_use_case.dart';
@@ -21,6 +22,7 @@ class AdminBinding extends Bindings {
     Get.lazyPut(() => AdminGetUserUseCase(Get.find()));
     Get.lazyPut(() => AdminDeleteUserUseCase(Get.find()));
     Get.lazyPut(() => GetUserUseCase(Get.find()));
+    Get.lazyPut(() => AdminGetFormationsArchiveUseCase(Get.find()));
 
     Get.lazyPut<AdminController>(
       () => AdminController(
@@ -29,6 +31,7 @@ class AdminBinding extends Bindings {
         adminGetUserUseCase: Get.find(),
         adminDeleteUserUseCase: Get.find(),
         getUserUseCase: Get.find(),
+        adminGetFormationsArchiveUseCase: Get.find(),
       ),
     );
   }

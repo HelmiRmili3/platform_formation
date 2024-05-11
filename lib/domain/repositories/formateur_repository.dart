@@ -11,5 +11,7 @@ abstract class FormateurRepository {
   Future<UserModel> getUser(String id);
   Future<void> addSeance(String formationId, Seance seance);
   Stream<List<Formation>> getAll();
+  Future<List<UserModel>> listEtudiantOfFormation(String formationId);
+
   Future<List<Seance>> getSeances(String formationId);
 }

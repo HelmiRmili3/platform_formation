@@ -23,6 +23,7 @@ class AuthController extends GetxController {
   final SignOutUseCase signOutUseCase;
   final ForgetPasswordUseCase forgetPasswordUseCase;
   final GetUserUseCase getUserUseCase;
+
   Rx<User?> user = Rx<User?>(null);
   Rx<File?> selectedImage = Rx<File?>(null);
   Rx<UserModel?> data = Rx<UserModel?>(null);
@@ -57,7 +58,8 @@ class AuthController extends GetxController {
         backgroundColor: Colors.redAccent,
       ),
       (r) {
-        Get.snackbar("Success", "User SignOut successfully");
+        Get.snackbar("Success", "User Sign out successfully",
+            backgroundColor: Colors.white);
         Get.to(() => SignInScreen());
       },
     );
@@ -67,7 +69,6 @@ class AuthController extends GetxController {
     // if (signUpFormKey.currentState!.validate()) {
     // GET THE IMAGE FROM RX<FILE?> TO FILE?
     File? selectedImageFile = selectedImage.value;
-
     final results = await signUpUseCase(
       nameController.text.trim(),
       emailController.text.trim(),

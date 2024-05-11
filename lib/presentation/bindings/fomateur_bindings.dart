@@ -2,6 +2,7 @@ import 'package:eplatfrom/data/datasources/remote_data_source.dart';
 import 'package:eplatfrom/data/repositories/formateur_repository_impl.dart';
 import 'package:eplatfrom/domain/repositories/formateur_repository.dart';
 import 'package:eplatfrom/domain/usecases/formateur/addseance.dart';
+import 'package:eplatfrom/domain/usecases/formateur/get_etudiants_of_formation.dart';
 import 'package:eplatfrom/domain/usecases/formateur/get_seances.dart';
 import 'package:eplatfrom/domain/usecases/get_user_usecase.dart';
 import 'package:eplatfrom/presentation/controllers/formateur_controller.dart';
@@ -25,6 +26,7 @@ class FormateurBinding extends Bindings {
     Get.lazyPut(() => EditFormationUseCase(Get.find()));
     Get.lazyPut(() => AddSeanceUserUseCase(Get.find()));
     Get.lazyPut(() => FetchSeancessUseCase(Get.find()));
+    Get.lazyPut(() => FetchEtudiantOfFormationUseCase(Get.find()));
 
     Get.lazyPut(() => GetUserUseCase(Get.find()));
 
@@ -36,6 +38,7 @@ class FormateurBinding extends Bindings {
           getUserUseCase: Get.find(),
           fetchSeancessUseCase: Get.find(),
           fetchFormationsUseCase: Get.find(),
+          fetchEtudiantOfFormationUseCase: Get.find(),
         ));
   }
 }

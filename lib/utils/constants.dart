@@ -5,6 +5,7 @@ class FirebaseCollections {
 
   static const String archive = 'archive';
   static const String absences = 'absences';
+  static const String etudiants = 'etudiants';
 }
 
 class Constants {

@@ -1,6 +1,8 @@
 import 'package:eplatfrom/data/models/formation.dart';
 import 'package:eplatfrom/data/models/seance.dart';
+import 'package:eplatfrom/data/models/user.dart';
 import 'package:eplatfrom/presentation/controllers/formateur_controller.dart';
+import 'package:eplatfrom/presentation/screens/home/formateur/formateur_absence_screen.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_formation_screen.dart';
 import 'package:eplatfrom/presentation/widgets/data_time_picker.dart';
 import 'package:eplatfrom/presentation/widgets/edit_widget.dart';
@@ -20,22 +22,29 @@ class FormationDetailsScreen extends StatefulWidget {
 
 class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
   String _selectedMenuItem = '';
+  late Formation formation;
+  late List<Seance?> seances;
+  late List<UserModel?> etudiants;
+
   final FormateurController controller = Get.find<FormateurController>();
-  late Formation formation; // Declare formation variable here
-  late List<Seance> seances;
+
   @override
   void initState() {
     super.initState();
     formation = widget.formation;
-    // Since fetchSeances returns a Future<List<Seance>>, we need to await its result
     controller.fetchSeances(formation.id).then((seancesList) {
       setState(() {
-        seances =
-            seancesList; // Assign the fetched list of seances to seances variable
+        seances = seancesList;
       });
     }).catchError((error) {
       debugPrint('Error fetching seances: $error');
-      // Handle error accordingly
+    });
+    controller.fetchEtudiantsList(formation.id).then((value) {
+      setState(() {
+        etudiants = value;
+      });
+    }).catchError((error) {
+      debugPrint('Error fetching etudiants: $error'); // Corrected error message
     });
   }
 
@@ -73,6 +82,13 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                 value: 'Seances',
                 child: Text(
                   'Sessions',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'etudiants',
+                child: Text(
+                  'Etudiants',
                   style: TextStyle(fontSize: 18),
                 ),
               ),
@@ -202,18 +218,29 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: seances.length,
                       itemBuilder: (BuildContext context, int index) {
-                        Seance seance = seances[index];
-                        return Card(
-                          elevation: 5,
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: ListTile(
-                            title: Text(
-                              "Session Title ${seance.salle.toString()}",
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            subtitle: Text(
-                              "Session Date ${seance.date.toString()}",
-                              style: const TextStyle(fontSize: 14),
+                        Seance seance = seances[index]!;
+                        DateTime dateTime =
+                            DateTime.parse(seance.date.toString());
+                        int year = dateTime.year;
+                        int month = dateTime.month;
+                        int day = dateTime.day;
+
+                        return GestureDetector(
+                          onTap: () => Get.to(() => FormateurAbsenceScreen(
+                                number: index + 1,
+                              )),
+                          child: Card(
+                            elevation: 5,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            child: ListTile(
+                              title: Text(
+                                "Salle ${seance.salle.toString()}",
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              subtitle: Text(
+                                "Date : $year - $month - $day , Time ${seance.time.hour}:${seance.time.minute} ",
+                                style: const TextStyle(fontSize: 14),
+                              ),
                             ),
                           ),
                         );
@@ -222,6 +249,38 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                   ],
                 ),
               ),
+            if (_selectedMenuItem == 'etudiants')
+              Container(
+                padding: const EdgeInsets.all(20),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: etudiants
+                      .length, // Use null-aware operators to handle null case
+                  itemBuilder: (BuildContext context, int index) {
+                    if (etudiants != null) {
+                      // Ensure etudiants is not null
+                      UserModel etudiant = etudiants[index]!;
+                      return Card(
+                        elevation: 5,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        child: ListTile(
+                          title: Text(
+                            "${index + 1} : ${etudiant.name.toString()}",
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          subtitle: Text(
+                            "Email :${etudiant.email.toString()}",
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const SizedBox(); // Return an empty SizedBox if etudiants is null
+                    }
+                  },
+                ),
+              )
           ],
         ),
       ),

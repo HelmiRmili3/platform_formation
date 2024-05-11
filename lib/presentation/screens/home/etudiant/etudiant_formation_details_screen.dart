@@ -1,4 +1,5 @@
 import 'package:eplatfrom/data/models/formation.dart';
+import 'package:eplatfrom/data/models/seance.dart';
 import 'package:eplatfrom/presentation/controllers/etudiant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,9 +18,18 @@ class EtudiantDetailsScreen extends StatefulWidget {
 class _FormationDetailsScreenState extends State<EtudiantDetailsScreen> {
   String _selectedMenuItem = '';
   final EtudiantController controller = Get.find<EtudiantController>();
+  @override
+  void initState() {
+    controller.isJoin(widget.formation.id).then((value) {
+      setState(() {});
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    controller.isJoin(widget.formation.id);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 15,
@@ -50,6 +60,7 @@ class _FormationDetailsScreenState extends State<EtudiantDetailsScreen> {
               ),
             ],
             onSelected: (String value) {
+              controller.getSeances(widget.formation.id);
               setState(() {
                 _selectedMenuItem = value;
               });
@@ -148,18 +159,19 @@ class _FormationDetailsScreenState extends State<EtudiantDetailsScreen> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 10,
+                      itemCount: controller.seances.length,
                       itemBuilder: (BuildContext context, int index) {
+                        Seance seance = controller.seances[index];
                         return Card(
                           elevation: 5,
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: ListTile(
                             title: Text(
-                              "Session Title $index",
+                              "Session Title ${seance.salle}",
                               style: const TextStyle(fontSize: 18),
                             ),
                             subtitle: Text(
-                              "Session Date $index",
+                              "Session Date ${seance.period}",
                               style: const TextStyle(fontSize: 14),
                             ),
                           ),
@@ -169,6 +181,21 @@ class _FormationDetailsScreenState extends State<EtudiantDetailsScreen> {
                   ],
                 ),
               ),
+            controller.isJoined.value
+                ? const SizedBox()
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FloatingActionButton(
+                      onPressed: () =>
+                          controller.joinFormation(widget.formation.id),
+                      backgroundColor: Colors.blueAccent,
+                      child: const Text(
+                        "Rejoindre",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 22, color: Colors.white),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
