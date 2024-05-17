@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Seance {
+  String id; // New field for the document ID
   DateTime date;
   TimeOfDay time;
   String salle;
   int period;
 
   Seance({
+    required this.id, // Updated constructor to include the ID
     required this.date,
     required this.time,
     required this.salle,
@@ -17,6 +19,7 @@ class Seance {
   // Convert Seance instance to a Map for JSON serialization
   Map<String, dynamic> toJson() {
     return {
+      'id': id, // Added ID to JSON representation
       'date': date.toIso8601String(),
       'time':
           '${time.hour}:${time.minute.toString().padLeft(2, '0')}', // Assuming context is available for formatting TimeOfDay
@@ -28,6 +31,7 @@ class Seance {
   // Create a Seance instance from a Map
   factory Seance.fromJson(Map<String, dynamic> json) {
     return Seance(
+      id: json['id'], // Updated factory constructor to include ID
       date: json['date'],
       time: json['time'],
       salle: json['salle'],
@@ -35,7 +39,6 @@ class Seance {
     );
   }
 
-  // Create a Seance instance from a DocumentSnapshot
   // Create a Seance instance from a DocumentSnapshot
   factory Seance.fromSnapshot(DocumentSnapshot snapshot) {
     // Parsing 'date' field as a string in ISO 8601 format
@@ -49,6 +52,7 @@ class Seance {
     );
 
     return Seance(
+      id: snapshot.id, // Extracting the document ID
       date: dateTime,
       time: timeOfDay,
       salle: snapshot['salle'],

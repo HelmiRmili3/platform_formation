@@ -26,9 +26,11 @@ abstract class RemoteDataSource {
   Future<List<Seance>> listSeances(String formationId);
   Future<void> joinFormation(String formationId, UserModel joinedUser);
   Future<bool> isJoined(String formationId, String etudiantId);
-
   Future<void> addSeance(String formationId, Seance seance);
-
+  Future<void> toggleEtudiantPresence(
+      String formationId, String seanceId, String etudiantId);
+  Stream<List<UserModel>> listAbsencePerSeance(
+      String formationId, String seance);
   // streams
   Stream<List<Formation>> listFormationsArchive();
   Stream<List<Formation>> listFormations();
@@ -223,14 +225,33 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<void> addSeance(String formationId, Seance newSeance) async {
     try {
-      DocumentReference formationRef = await FirebaseFirestore.instance
+      // Reference to the source collection
+      CollectionReference etudiantsRef = FirebaseFirestore.instance
           .collection(FirebaseCollections.courses)
           .doc(formationId)
-          .collection("seances")
-          .add(newSeance
-              .toJson()); // Assuming newSeance has a toMap method to convert it to a Map
+          .collection(FirebaseCollections.etudiants);
 
-      debugPrint('Seance added with ID: ${formationRef.id}');
+      // Reference to the destination document
+      DocumentReference seanceRef = FirebaseFirestore.instance
+          .collection(FirebaseCollections.courses)
+          .doc(formationId)
+          .collection(FirebaseCollections.seances)
+          .doc(newSeance.id);
+
+      // Set the new seance document
+      await seanceRef.set(newSeance.toJson());
+
+      QuerySnapshot etudiantsSnapshot = await etudiantsRef.get();
+      // ignore: avoid_function_literals_in_foreach_calls
+      etudiantsSnapshot.docs.forEach((etudiantDoc) async {
+        UserModel e = UserModel.fromSnapshot(etudiantDoc);
+        await seanceRef
+            .collection(FirebaseCollections.absences)
+            .doc(etudiantDoc.id)
+            .set(e.toJson());
+      });
+
+      debugPrint('Seance added with ID: ${seanceRef.id}');
     } catch (e) {
       debugPrint('Error adding seance to formation: $e');
     }
@@ -309,7 +330,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       return etudiants;
     } catch (e) {
       print('Error fetching etudiants: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -323,6 +344,44 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         return snapshot.docs.map(
           (DocumentSnapshot doc) {
             return Formation.fromSnapshot(doc);
+          },
+        ).toList();
+      },
+    );
+  }
+
+  @override
+  Future<void> toggleEtudiantPresence(
+      String formationId, String seanceId, String etudiantId) async {
+    DocumentReference formationRef = FirebaseFirestore.instance
+        .collection(FirebaseCollections.courses)
+        .doc(formationId)
+        .collection(FirebaseCollections.seances)
+        .doc(seanceId)
+        .collection(FirebaseCollections.absences)
+        .doc(etudiantId);
+    // Retrieve the current presence status
+    DocumentSnapshot etudiantDoc = await formationRef.get();
+    UserModel e = UserModel.fromSnapshot(etudiantDoc);
+    await formationRef.update({'present': !e.present});
+    debugPrint('Presence toggled for student with ID: $etudiantId');
+  }
+
+  @override
+  Stream<List<UserModel>> listAbsencePerSeance(
+      String formationId, String seanceId) {
+    return FirebaseFirestore.instance
+        .collection(FirebaseCollections.courses)
+        .doc(formationId)
+        .collection(FirebaseCollections.seances)
+        .doc(seanceId)
+        .collection(FirebaseCollections.absences)
+        .snapshots()
+        .map(
+      (QuerySnapshot snapshot) {
+        return snapshot.docs.map(
+          (DocumentSnapshot doc) {
+            return UserModel.fromSnapshot(doc);
           },
         ).toList();
       },

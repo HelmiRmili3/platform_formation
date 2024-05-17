@@ -35,16 +35,16 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, UserCredential?>> signin(
-      String email, String password) async {
-    try {
-      final result = await remoteDataSource.signInUser(email, password);
-      return Right(result);
-    } catch (e) {
-      return Left(Failure("Server error : ${e.toString()}"));
-    }
-  }
+  // @override
+  // Future<Either<Failure, UserCredential?>> signin(
+  //     String email, String password) async {
+  //   try {
+  //     final result = await remoteDataSource.signInUser(email, password);
+  //     return Right(result);
+  //   } catch (e) {
+  //     return Left(Failure("Server error : ${e.toString()}"));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, UserCredential?>> signup(
@@ -58,14 +58,15 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await remoteDataSource.signUpUser(email, password);
 
       if (result != null) {
-
         await remoteDataSource.uploadFile(image).then((imageUrl) {
           remoteDataSource.addUser(UserModel(
-              id: result.user!.uid,
-              name: name,
-              email: email,
-              role: Role.etudiant,
-              image: imageUrl));
+            id: result.user!.uid,
+            name: name,
+            email: email,
+            role: Role.etudiant,
+            image: imageUrl,
+            present: true,
+          ));
         });
       }
 

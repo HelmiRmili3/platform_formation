@@ -19,7 +19,7 @@ class _FormateurHomeScreenState extends State<FormateurHomeScreen> {
   }
 
   final List<Widget> screens = [
-    FormateurFormationScreen(),
+    const FormateurFormationScreen(),
     FormateurProfileScreen()
   ];
   final List<String> titles = const [

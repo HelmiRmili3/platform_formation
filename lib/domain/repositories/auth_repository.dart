@@ -11,7 +11,7 @@ abstract class AuthRepository {
     String password,
     File image,
   );
-  Future<Either<Failure, void>> signin(String email, String password);
+  // Future<Either<Failure, void>> signin(String email, String password);
 
   Future<UserModel> getUser(String id);
 

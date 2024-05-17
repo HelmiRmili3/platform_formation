@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FormateurFormationScreen extends GetView<FormateurController> {
-  FormateurFormationScreen({Key? key}) : super(key: key);
+  const FormateurFormationScreen({Key? key}) : super(key: key);
   // @override
   // final FormateurController controller = Get.find<FormateurController>();
 

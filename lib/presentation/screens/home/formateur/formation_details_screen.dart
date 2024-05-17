@@ -44,7 +44,7 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
         etudiants = value;
       });
     }).catchError((error) {
-      debugPrint('Error fetching etudiants: $error'); // Corrected error message
+      debugPrint('Error fetching etudiants: $error');
     });
   }
 
@@ -190,7 +190,7 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                     ElevatedButton(
                       onPressed: () {
                         controller.deleteFormation(formation.id);
-                        Get.to(() => FormateurFormationScreen());
+                        Get.to(() => const FormateurFormationScreen());
                       },
                       child: const Text("Delete Formation"),
                     )
@@ -227,7 +227,8 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
 
                         return GestureDetector(
                           onTap: () => Get.to(() => FormateurAbsenceScreen(
-                                number: index + 1,
+                                seance: seance,
+                                formation: widget.formation,
                               )),
                           child: Card(
                             elevation: 5,
@@ -258,29 +259,25 @@ class _FormationDetailsScreenState extends State<FormationDetailsScreen> {
                   itemCount: etudiants
                       .length, // Use null-aware operators to handle null case
                   itemBuilder: (BuildContext context, int index) {
-                    if (etudiants != null) {
-                      // Ensure etudiants is not null
-                      UserModel etudiant = etudiants[index]!;
-                      return Card(
-                        elevation: 5,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        child: ListTile(
-                          title: Text(
-                            "${index + 1} : ${etudiant.name.toString()}",
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          subtitle: Text(
-                            "Email :${etudiant.email.toString()}",
-                            style: const TextStyle(fontSize: 14),
-                          ),
+                    // Ensure etudiants is not null
+                    UserModel etudiant = etudiants[index]!;
+                    return Card(
+                      elevation: 5,
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      child: ListTile(
+                        title: Text(
+                          "${index + 1} : ${etudiant.name.toString()}",
+                          style: const TextStyle(fontSize: 18),
                         ),
-                      );
-                    } else {
-                      return const SizedBox(); // Return an empty SizedBox if etudiants is null
-                    }
+                        subtitle: Text(
+                          "Email :${etudiant.email.toString()}",
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    );
                   },
                 ),
-              )
+              ),
           ],
         ),
       ),

@@ -7,7 +7,9 @@ import 'package:eplatfrom/domain/usecases/formateur/delete.dart';
 import 'package:eplatfrom/domain/usecases/formateur/edit.dart';
 import 'package:eplatfrom/domain/usecases/formateur/fetch.dart';
 import 'package:eplatfrom/domain/usecases/formateur/get_etudiants_of_formation.dart';
+import 'package:eplatfrom/domain/usecases/formateur/get_list_absence_seance_use_case.dart';
 import 'package:eplatfrom/domain/usecases/formateur/get_seances.dart';
+import 'package:eplatfrom/domain/usecases/formateur/toggle_etudiant_presence_use_case.dart';
 import 'package:eplatfrom/domain/usecases/get_user_usecase.dart';
 import 'package:eplatfrom/presentation/screens/home/formateur/formateur_home_screen.dart';
 import 'package:eplatfrom/utils/usecase.dart';
@@ -28,7 +30,9 @@ class FormateurController extends GetxController {
   final AddFormationUseCase addFormationUseCase;
   final EditFormationUseCase editFormationUseCase;
   final DeleteFormationUseCase deleteFormationUseCase;
+  final ToggleEtudiantPresenceUseCase toggleEtudiantPresenceUseCase;
   final FetchEtudiantOfFormationUseCase fetchEtudiantOfFormationUseCase;
+  final FetchListAbsencePerSeanceUseCase fetchListAbsencePerSeanceUseCase;
   final FetchFormationsUseCase fetchFormationsUseCase;
   final AddSeanceUserUseCase addSeanceUserUseCase;
   final FetchSeancessUseCase fetchSeancessUseCase;
@@ -41,7 +45,9 @@ class FormateurController extends GetxController {
   Rx<UserModel?> data = Rx<UserModel?>(null);
 
   FormateurController({
+    required this.toggleEtudiantPresenceUseCase,
     required this.fetchEtudiantOfFormationUseCase,
+    required this.fetchListAbsencePerSeanceUseCase,
     required this.addFormationUseCase,
     required this.editFormationUseCase,
     required this.deleteFormationUseCase,
@@ -63,10 +69,22 @@ class FormateurController extends GetxController {
 
   final _formations = <Formation>[].obs;
   List<Formation> get formations => _formations;
+  final _listabcense = <UserModel>[].obs;
+  List<UserModel> get listabcense => _listabcense;
+
+  Future<void> toggleEtudiantPresence(
+      String formationId, String seanceId, String etudiantId) async {
+    await toggleEtudiantPresenceUseCase(formationId, seanceId, etudiantId);
+  }
 
   Future<void> addSeance(String formationId) async {
-    Seance seance =
-        Seance(date: selectedDate, time: selectedTime, salle: "A2", period: 1);
+    Seance seance = Seance(
+      id: const Uuid().v1(),
+      date: selectedDate,
+      time: selectedTime,
+      salle: "A2",
+      period: 1,
+    );
     await addSeanceUserUseCase(formationId, seance);
   }
 
@@ -135,6 +153,13 @@ class FormateurController extends GetxController {
   Future<List<UserModel>> fetchEtudiantsList(String formationId) async {
     List<UserModel> list = await fetchEtudiantOfFormationUseCase(formationId);
     return list;
+  }
+
+  void fetchListAbsencePerSeance(String formationId, String seanceId) async {
+    fetchListAbsencePerSeanceUseCase(formationId, seanceId)
+        .listen((List<UserModel> result) {
+      _listabcense.assignAll(result);
+    });
   }
 
   clear() {

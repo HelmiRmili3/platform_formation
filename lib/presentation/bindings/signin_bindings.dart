@@ -14,7 +14,7 @@ class SignInBinding extends Bindings {
         () => SignInRepositoryImpl(remoteDataSource: Get.find()));
     Get.lazyPut<SignInUseCase>(() => SignInUseCase(Get.find()));
     Get.lazyPut<GetUserUseCase>(() => GetUserUseCase(Get.find()));
-    
+
     Get.lazyPut<SignInController>(() => SignInController(
           signInUseCase: Get.find(),
           getUserUseCase: Get.find(),

@@ -12,6 +12,10 @@ abstract class FormateurRepository {
   Future<void> addSeance(String formationId, Seance seance);
   Stream<List<Formation>> getAll();
   Future<List<UserModel>> listEtudiantOfFormation(String formationId);
+  Stream<List<UserModel>> listAbsencePerSeance(
+      String formationId, String seance);
 
   Future<List<Seance>> getSeances(String formationId);
+  Future<void> toggleEtudiantPresence(
+      String formationId, String seanceId, String etudiantId);
 }

@@ -3,7 +3,9 @@ import 'package:eplatfrom/data/repositories/formateur_repository_impl.dart';
 import 'package:eplatfrom/domain/repositories/formateur_repository.dart';
 import 'package:eplatfrom/domain/usecases/formateur/addseance.dart';
 import 'package:eplatfrom/domain/usecases/formateur/get_etudiants_of_formation.dart';
+import 'package:eplatfrom/domain/usecases/formateur/get_list_absence_seance_use_case.dart';
 import 'package:eplatfrom/domain/usecases/formateur/get_seances.dart';
+import 'package:eplatfrom/domain/usecases/formateur/toggle_etudiant_presence_use_case.dart';
 import 'package:eplatfrom/domain/usecases/get_user_usecase.dart';
 import 'package:eplatfrom/presentation/controllers/formateur_controller.dart';
 import 'package:get/get.dart';
@@ -27,7 +29,8 @@ class FormateurBinding extends Bindings {
     Get.lazyPut(() => AddSeanceUserUseCase(Get.find()));
     Get.lazyPut(() => FetchSeancessUseCase(Get.find()));
     Get.lazyPut(() => FetchEtudiantOfFormationUseCase(Get.find()));
-
+    Get.lazyPut(() => ToggleEtudiantPresenceUseCase(Get.find()));
+    Get.lazyPut(() => FetchListAbsencePerSeanceUseCase(Get.find()));
     Get.lazyPut(() => GetUserUseCase(Get.find()));
 
     Get.lazyPut<FormateurController>(() => FormateurController(
@@ -39,6 +42,8 @@ class FormateurBinding extends Bindings {
           fetchSeancessUseCase: Get.find(),
           fetchFormationsUseCase: Get.find(),
           fetchEtudiantOfFormationUseCase: Get.find(),
+          fetchListAbsencePerSeanceUseCase: Get.find(),
+          toggleEtudiantPresenceUseCase: Get.find(),
         ));
   }
 }

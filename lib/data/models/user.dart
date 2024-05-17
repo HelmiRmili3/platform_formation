@@ -8,24 +8,27 @@ class UserModel {
   String email;
   Role role;
   String image;
+  bool present; // Added field
 
-  UserModel(
-      {required this.id,
-      required this.name,
-      required this.email,
-      required this.role,
-      required this.image});
+  UserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.role,
+    required this.image,
+    required this.present, // Added field
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-        id: json['id'],
-        name: json['name'],
-        email: json['email'],
-        role: Role.values[json['role']],
-        image: json['image']);
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      role: Role.values[json['role']],
+      image: json['image'],
+      present: json['present'] ?? false, // Added field
+    );
   }
-
-  get value => null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -33,7 +36,8 @@ class UserModel {
       'name': name,
       'email': email,
       'role': role.index,
-      'image': image
+      'image': image,
+      'present': present, // Added field
     };
   }
 
@@ -48,6 +52,7 @@ class UserModel {
     String? email,
     Role? role,
     String? image,
+    bool? present, // Added field
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -55,6 +60,7 @@ class UserModel {
       email: email ?? this.email,
       role: role ?? this.role,
       image: image ?? this.image,
+      present: present ?? this.present, // Added field
     );
   }
 }

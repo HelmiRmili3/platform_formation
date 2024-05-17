@@ -67,4 +67,17 @@ class FormateurRepositoyImpl implements FormateurRepository {
   Future<List<UserModel>> listEtudiantOfFormation(String formationId) {
     return remoteDataSource.listEtudiantOfFormation(formationId);
   }
+
+  @override
+  Future<void> toggleEtudiantPresence(
+      String formationId, String seanceId, String etudiantId) {
+    return remoteDataSource.toggleEtudiantPresence(
+        formationId, seanceId, etudiantId);
+  }
+
+  @override
+  Stream<List<UserModel>> listAbsencePerSeance(
+      String formationId, String seance) {
+    return remoteDataSource.listAbsencePerSeance(formationId, seance);
+  }
 }
